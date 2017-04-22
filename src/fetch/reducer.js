@@ -1,5 +1,5 @@
 import {
-  createTree,
+  createMultiReducer,
   createDynamicReducer,
   createMetaReducer
 } from 'alexs-redux-helpers/reducers'
@@ -14,7 +14,7 @@ import {
   SLOW_CONNECTION,
 } from './constants';
 
-export default createTree({
+export default createMultiReducer({
   status: createMetaReducer('fetch', createDynamicReducer({
     initial: NOT_LOADED,
     [REQUEST]: [action => action.ref, FETCHING],

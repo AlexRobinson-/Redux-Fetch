@@ -1,11 +1,11 @@
 import {
   createMetaReducer,
-  createTree
+  createMultiReducer
 } from 'alexs-redux-helpers/reducers';
 import { FETCH_ACTION_TYPES } from './../../fetch';
 import { OPTIMISTIC_UPDATE, CANCEL_OPTIMISTIC_UPDATE } from './../action-types';
 
-const reducer = createTree({
+const reducer = createMultiReducer({
   updates: {
     initial: {},
     [OPTIMISTIC_UPDATE]: (state, action) => {
