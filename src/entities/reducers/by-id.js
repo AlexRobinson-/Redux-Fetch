@@ -16,16 +16,13 @@ const reducer = (state = {}, action) => {
   return mergeWith({}, state, getAllEntities(action), customizer)
 }
 
-export const createEntityReducer = reducers => (state, action) => {
-  const result = Object.keys(reducers).reduce(
-    (newState, key) => ({
-      ...newState,
-      [key]: reducers[key](newState[key], action)
-    }),
-    reducer(state, action)
-  )
-  return result
-}
+export const createEntityReducer = reducers => (state, action) => Object.keys(reducers).reduce(
+  (newState, key) => ({
+    ...newState,
+    [key]: reducers[key](newState[key], action)
+  }),
+  reducer(state, action)
+);
 
 export default reducer;
 
