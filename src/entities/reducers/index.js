@@ -1,6 +1,7 @@
 import { combineReducers } from 'redux';
 import nestSelectors from 'alexs-redux-helpers/selectors/nest-selectors';
-import byId, { selectors as byIdSelectors, createEntityReducer as createReducer } from './by-id';
+import byId, { selectors as byIdSelectors } from './by-id';
+import createByIdReducer from '../utils/create-by-id-reducer';
 import timestamp, { selectors as timestampSelectors } from './timestamp';
 import editable, { selectors as editableSelectors } from './editable';
 import optimistic, { selectors as optimisticSelectors } from './optimistic'
@@ -12,19 +13,26 @@ export default combineReducers({
   optimistic
 });
 
-export const createEntityReducer = reducers => combineReducers({
-  byId: createReducer(reducers),
+export const createEntityReducer = byIdReducers => combineReducers({
+  byId: createByIdReducer(byIdReducers),
   timestamp,
   editable,
   optimistic
 })
 
-const nestedByIdSelectors = nestSelectors(byIdSelectors, state => state.byId)
-const nestedOptimisticSelectors = nestSelectors(optimisticSelectors, state => state.optimistic)
+const nestedSelectors = Object.assign({},
+  nestSelectors(byIdSelectors, state => state.byId),
+  nestSelectors(optimisticSelectors, state => state.optimistic),
+  nestSelectors(timestampSelectors, state => state.timestamp),
+  nestSelectors(editableSelectors, state => state.editable)
+)
 
-const getById = (state, entityName, id) => {
-  const item = nestedByIdSelectors.getById(state, entityName, id)
-  const updates = nestedOptimisticSelectors.getItemUpdates(state, entityName, id)
+const getById = (state, entityName, id, withOptimistic = true) => {
+  const item = nestedSelectors.getById(state, entityName, id)
+
+  if (!withOptimistic) return item;
+
+  const updates = nestedSelectors.getItemUpdates(state, entityName, id)
 
   if (!item && !updates) return null;
 
@@ -33,36 +41,16 @@ const getById = (state, entityName, id) => {
     ...updates
   }
 }
-const getAll = (state, entityName) => {
-  const items = nestedByIdSelectors.getAll(state, entityName);
-  return items.map(item => ({ ...item, ...nestedOptimisticSelectors.getItemUpdates(state, entityName, item.id) }))
-}
+const getAll = (state, entityName, withOptimistic = true) => {
+  const items = nestedSelectors.getAll(state, entityName);
 
-const nestedSelectors = Object.assign({},
-  nestedOptimisticSelectors,
-  nestSelectors(timestampSelectors, state => state.timestamp),
-  nestSelectors(editableSelectors, state => state.editable),
-);
+  if (!withOptimistic) return items;
 
-const getIsFresh = (state, type, id) => {
-  const item = nestedSelectors.getById(state, type, id);
-
-  if (item === undefined) {
-    return false;
-  }
-
-  const timestamp = nestedSelectors.getTimestamp(state, type, id);
-
-  if (timestamp === undefined) {
-    return false;
-  }
-
-  return timestamp + (60000) > Date.now()
+  return items.map(item => ({ ...item, ...nestedSelectors.getItemUpdates(state, entityName, item.id) }))
 }
 
 export const selectors = {
   ...nestedSelectors,
-  getIsFresh,
   getById,
   getAll
 }

@@ -1,6 +1,7 @@
 import {
   createMetaReducer,
-  createMultiReducer
+  createMultiReducer,
+  createReducer
 } from 'alexs-redux-helpers/reducers';
 import { FETCH_ACTION_TYPES } from './../../fetch';
 import { OPTIMISTIC_UPDATE, CANCEL_OPTIMISTIC_UPDATE } from './../action-types';
@@ -8,47 +9,33 @@ import { OPTIMISTIC_UPDATE, CANCEL_OPTIMISTIC_UPDATE } from './../action-types';
 const reducer = createMultiReducer({
   updates: {
     initial: {},
-    [OPTIMISTIC_UPDATE]: (state, action) => {
-      return {
-        ...state,
-        [action.payload.ref]: action.payload.optimisticEntities
-      }
-    },
+    [OPTIMISTIC_UPDATE]: (state, action) => ({
+      ...state,
+      [action.payload.ref]: action.payload.optimisticEntities
+    }),
     [CANCEL_OPTIMISTIC_UPDATE]: (state, action) => ({
       ...state,
-      [action.payload.ref]: null
+      [action.payload.ref]: undefined
     }),
-    default: createMetaReducer('fetch', (state, meta) => {
-      switch (meta.type) {
-        case FETCH_ACTION_TYPES.SUCCESS:
-          return {
-            ...state,
-            [meta.ref]: null
-          }
-        default:
-          return state;
-      }
-    })
+    default: createMetaReducer('fetch', createReducer({
+      initial: {},
+      [FETCH_ACTION_TYPES.SUCCESS]: (state, action) => ({
+        ...state,
+        [action.ref]: undefined
+      })
+    }))
   },
   order: {
     initial: [],
-    [OPTIMISTIC_UPDATE]: (state, action) => {
-      return [
-        ...state,
-        action.payload.ref
-      ]
-    },
-    [CANCEL_OPTIMISTIC_UPDATE]: (state, action) => {
-      return state.filter(ref => ref !== action.payload.ref)
-    },
-    default: createMetaReducer('fetch', (state, meta) => {
-      switch (meta.type) {
-        case FETCH_ACTION_TYPES.SUCCESS:
-          return state.filter(ref => ref !== meta.ref)
-        default:
-          return state;
-      }
-    })
+    [OPTIMISTIC_UPDATE]: (state, action) => ([
+      ...state,
+      action.payload.ref
+    ]),
+    [CANCEL_OPTIMISTIC_UPDATE]: (state, action) => state.filter(ref => ref !== action.payload.ref),
+    default: createMetaReducer('fetch', createReducer({
+      initial: [],
+      [FETCH_ACTION_TYPES.SUCCESS]: (state, action) => state.filter(ref => ref !== action.ref)
+    }))
   }
 })
 
@@ -92,5 +79,3 @@ export const selectors = {
   getItemUpdates,
   getItemUpdateForRef
 }
-
-

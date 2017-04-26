@@ -16,14 +16,6 @@ const reducer = (state = {}, action) => {
   return mergeWith({}, state, getAllEntities(action), customizer)
 }
 
-export const createEntityReducer = reducers => (state, action) => Object.keys(reducers).reduce(
-  (newState, key) => ({
-    ...newState,
-    [key]: reducers[key](newState[key], action)
-  }),
-  reducer(state, action)
-);
-
 export default reducer;
 
 export const getById = (state, type, id) => state[type] && state[type][id];

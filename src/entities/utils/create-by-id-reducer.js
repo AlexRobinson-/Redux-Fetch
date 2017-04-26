@@ -1,7 +1,7 @@
 import reducer from './../reducers/by-id';
 import isObject from './../../utils/is-object';
 
-const createEntityReducer = reducers => {
+const createByIdReducer = reducers => {
   if (!isObject(reducers)) {
     throw new Error(`createEntityReducer expects first argument to be an object, received type ${typeof reducers}}`);
   }
@@ -15,4 +15,4 @@ const createEntityReducer = reducers => {
   )
 }
 
-export default createEntityReducer;
+export default createByIdReducer;

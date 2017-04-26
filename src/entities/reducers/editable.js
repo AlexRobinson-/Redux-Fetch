@@ -38,16 +38,19 @@ const reducer = createDynamicReducer({
         ...state,
         [name]: (() => {
           if (!state[name] || !state[name].id) {
-            return state;
+            return state[name];
           }
 
           const entities = getEntities(action, name)
 
           if (!entities[state[name].id]) {
-            return state
+            return state[name];
           }
 
-          return merge({}, state[name], entities[state[name].id])
+          return {
+            ...state[name],
+            ...entities[state[name].id]
+          }
         })()
       }), oldState
     )

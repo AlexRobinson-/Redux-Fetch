@@ -1,9 +1,9 @@
-import createEntityReducer from './create-entity-reducer';
+import createEntityReducer from './create-by-id-reducer';
 
 jest.mock('./../reducers/by-id', () => jest.fn(state => ({ ...state, some: 'state' })));
 const byId = require('./../reducers/by-id');
 
-describe('create-entity-reducer', () => {
+describe('create-by-id-reducer', () => {
   it('throws an error if not passed in an object', () => {
     expect(() => createEntityReducer(4)).toThrow();
   })
