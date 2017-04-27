@@ -3,7 +3,9 @@ import {
   BEGIN_EDITING,
   BEGIN_NEW,
   UPDATE_EDITABLE,
-  STOP_EDITING
+  STOP_EDITING,
+  OPTIMISTIC_UPDATE,
+  CANCEL_OPTIMISTIC_UPDATE
 } from './action-types';
 
 /**
@@ -23,6 +25,17 @@ export const createEditActions = entityName => Object.keys(editActions).reduce(
   }), {}
 );
 
+/**
+ * Optimistic
+ */
+export const optimisticUpdate = (ref, optimisticEntities) => action(
+  OPTIMISTIC_UPDATE,
+  {
+    ref,
+    optimisticEntities
+  }
+)
 
+export const cancelOptimisticUpdate = ref => action(CANCEL_OPTIMISTIC_UPDATE, { ref })
 
 

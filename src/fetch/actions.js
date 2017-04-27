@@ -6,6 +6,7 @@ import {
   FAILURE
 } from './constants'
 import { selectors } from './reducer'
+import { optimisticUpdate } from './../entities/actions';
 
 export const slowConnection = ref => action(SLOW_CONNECTION, { ref })
 
@@ -19,8 +20,8 @@ export const fetchRequest = (ref, payload, meta) => _fetchAction(payload, meta, 
 export const fetchSuccess = (ref, payload, meta) => _fetchAction(payload, meta, ref, SUCCESS)
 export const fetchFailure = (ref, payload, meta) => _fetchAction(payload, meta, ref, FAILURE)
 
-const slowConnectionTimer = () => new Promise(res => {
-  setTimeout(() => res({ slow: true }), 3000)
+const slowConnectionTimer = timeout => new Promise(res => {
+  setTimeout(() => res({ slow: true }), timeout)
 })
 
 const wrapPromise = promise => new Promise(
@@ -31,11 +32,11 @@ const wrapPromise = promise => new Promise(
   }
 )
 
-export const connectionStats = (ref, promise) => dispatch => {
+export const connectionStats = (ref, promise, { slowTimeout = 3000 }) => dispatch => {
   /* Check for a slow connection */
   Promise.race([
     wrapPromise(promise),
-    slowConnectionTimer()
+    slowConnectionTimer(slowTimeout)
   ])
     .then(({ slow }) => {
         if (slow) {
@@ -45,28 +46,9 @@ export const connectionStats = (ref, promise) => dispatch => {
     )
 }
 
-export const optimisticUpdate = (ref, optimisticEntities) => action(
-  'OPTIMISTIC_UPDATE',
-  {
-    ref,
-    optimisticEntities
-  }
-)
-
-export const cancelOptimisticUpdate = ref => action(
-  'CANCEL_OPTIMISTIC_UPDATE',
-  {
-    ref
-  }
-)
-
-export const fetchAction = (ref, promise, { fetchSelectors = selectors, optimistic } = {}) =>
+export const fetchAction = (ref, promise, { optimistic } = {}) =>
   (dispatch, getState) =>
     new Promise(res => {
-      if (fetchSelectors.getIsLoading(getState(), ref)) {
-        return;
-      }
-
       if (optimistic) {
         dispatch(optimisticUpdate(ref, optimistic))
       }
@@ -77,7 +59,7 @@ export const fetchAction = (ref, promise, { fetchSelectors = selectors, optimist
         ({ response, error }) => {
           if (error) {
             dispatch(fetchFailure(ref))
-            return { error }
+            res({ error })
           }
 
           dispatch(fetchSuccess(ref, response))
