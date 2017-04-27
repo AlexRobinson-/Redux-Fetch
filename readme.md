@@ -10,61 +10,16 @@ A set of redux actions/selectors/selectors to handle making api calls that fetch
 #### Editable
 
 ##### beginEditing(entityName, fields)
-Assigns the fields to the entity
-
-```js
-beginEditing('todo', {title: 'Do stuff'})
-
-updatedStore = {
-  todo: {
-    title: 'Do Stuff'
-  }
-}
-```
+Assigns the fields to the editable entity
 
 ##### beginNew(entityName)
-Sets the entity to an empty object
-
-```js
-beginNew('todo')
-
-updatedStore = {
-  todo: {}
-}
-```
+Sets the editable entity to an empty object
 
 ##### update
-Merges the fields into the entity
-
-```js
-initialStore = {
-  todo: {
-    title: 'Do Stuff',
-    completed: true
-  }
-}
-
-update('todo', {completed: false})
-
-updatedStore = {
-  todo: {
-    title: 'Do Stuff',
-    completed: false
-  }
-}
-```
-
+Merges the fields into the editable entity
 
 ##### stopEditing
-Sets the entity to null
-
-```js
-stopEditing('todo')
-
-updatedStore = {
-  todo: null
-}
-```
+Sets the editable entity to null
 
 ##### createEditActions(entityName)
 Wraps all of the editable entity actions with the entityName
@@ -78,7 +33,7 @@ editableTodoActions.update({completed: false}) // update('todo', {completed: fal
 #### Optimistic
 
 #### optimisticUpdate(ref, entities)
-Creates an optimistic update optimisticUpdate that can be references by the ref
+Creates an optimistic update optimisticUpdate that can be referenced by the provided ref
 
 #### cancelOptimisticUpdate(ref)
 Cancels the optimistic update for the given ref
