@@ -172,8 +172,11 @@ This action handles the whole life cycle of an api request.
 1. If config.optimistic provided, it will dispatch an optimisticUpdate
 2. Dispatch fetchRequest
 3. Dispatch connectionStats
-4a. If promise resolves with an object with an 'error' key, dispatches fetchFailure
-4b. OR If promise resolves with an object with a 'response' key, dispatches fetchSuccess
+4.  If promise resolves with an object with an 'error' key, dispatches fetchFailure
+    
+    OR
+    
+    If promise resolves with an object with a 'response' key, dispatches fetchSuccess
 
 ### Selectors
 
