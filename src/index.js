@@ -4,7 +4,7 @@ import nestSelectors from 'alexs-redux-helpers/selectors/nest-selectors';
 import fetch, { selectors as rawFetchSelectors } from './fetch';
 import entities, {
   selectors as rawEntitySelectors,
-  createEntitySelector as rawCreateEntitySelector,
+  createEntitySelectors as rawCreateEntitySelectors,
   createEntityReducer as rawCreateEntityReducer
 } from './entities';
 
@@ -27,7 +27,7 @@ const selectors = {
   entities: entitySelectors
 }
 
-const createEntitySelector = (...args) => nestSelectors(rawCreateEntitySelector(...args), state => state.entities);
+const createEntitySelectors = (...args) => nestSelectors(rawCreateEntitySelectors(...args), state => state.entities);
 
 export default reducer;
 
@@ -35,5 +35,5 @@ export {
   reducer,
   selectors,
   createEntityReducer,
-  createEntitySelector
+  createEntitySelectors
 }
