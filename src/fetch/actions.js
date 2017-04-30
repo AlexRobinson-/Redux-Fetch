@@ -60,6 +60,7 @@ export const fetchAction = (ref, promise, { optimistic } = {}) =>
           if (error) {
             dispatch(fetchFailure(ref))
             res({ error })
+            return
           }
 
           dispatch(fetchSuccess(ref, response))
