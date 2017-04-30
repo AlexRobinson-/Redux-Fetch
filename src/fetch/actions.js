@@ -32,7 +32,7 @@ const wrapPromise = promise => new Promise(
   }
 )
 
-export const connectionStats = (ref, promise, { slowTimeout = 3000 }) => dispatch => {
+export const connectionStats = (ref, promise, { slowTimeout = 3000 } = {}) => dispatch => {
   /* Check for a slow connection */
   Promise.race([
     wrapPromise(promise),
