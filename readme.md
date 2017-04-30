@@ -2,7 +2,7 @@
 A set of redux actions/selectors/selectors to handle making api calls that fetch data and then storing that data.
 
 ## About
-The library comes with two main reducers/modules
+The library comes with two main modules 'Entities' and 'Fetch'.
 
 ### Entities
 A generic entity store based around the normalizr library that stores entities by their id, nested under their 'entityName' (e.g. users).
