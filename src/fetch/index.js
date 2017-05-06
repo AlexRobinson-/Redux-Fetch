@@ -1,6 +1,6 @@
-import reducer, { selectors } from './reducer'
-import { connectionStats, fetchAction } from './actions'
-import { SUCCESS, FETCH_ACTION_TYPES } from './constants';
+import reducer, { selectors } from './reducer';
+import { connectionStats, fetchAction } from './actions';
+import { SUCCESS, FAILED, FETCHING, FETCH_ACTION_TYPES } from './constants';
 
 export default reducer
 export {
@@ -8,6 +8,8 @@ export {
   connectionStats,
   fetchAction,
   FETCH_ACTION_TYPES
-}
+};
 
-export const fetchSuccessType = ref => `${ref}_${SUCCESS}`
+export const successType = ref => `${ref}_${SUCCESS}`;
+export const fetchingType = ref => `${ref}_${FETCHING}`;
+export const failedType = ref => `${ref}_${FAILED}`;

@@ -81,7 +81,7 @@ export const userSelectors = createEntitySelector('user', state => state.api);
 ```
 
 ### 5. Using the fetch actions
-The way the fetch feature keeps track of your individual api calls is via a unique key.
+The way the fetch feature keeps track of your individual api calls is via a unique key (known as refs).
 It is recommended that you create key generator functions to easily produce these keys.
 
 ```js
@@ -144,22 +144,49 @@ export const fetchTodos = () => fetchAction('ALL_TODOS', todoApi.fetchAll())
 ##### beginEditing(entityName, fields)
 Assigns the fields to the editable entity
 
+```js
+import { beginEditing } from 'alexs-redux-fetch/entities/actions';
+
+beginEditing('todo', {id: '123', title: 'Do stuff'})
+```
+
 ##### beginNew(entityName)
 Sets the editable entity to an empty object
+
+```js
+import { beginNew } from 'alexs-redux-fetch/entities/actions';
+
+beginNew('todo')
+```
 
 ##### update
 Merges the fields into the editable entity
 
+```js
+import { update } from 'alexs-redux-fetch/entities/actions';
+
+update('todo', {title: 'Do other stuff'})
+```
+
 ##### stopEditing
 Sets the editable entity to null
+
+```js
+import { stopEditing } from 'alexs-redux-fetch/entities/actions';
+
+stopEditing('todo')
+```
 
 ##### createEditActions(entityName)
 Wraps all of the editable entity actions with the entityName
 
 ```js
-const editableTodoActions = createEditActions('todo')
+import { createEditActions } from 'alexs-redux-fetch/entities/actions';
 
-editableTodoActions.update({completed: false}) // update('todo', {completed: false})
+const editTodoActions = createEditActions('todo')
+
+editTodoActions.update({completed: false})
+
 ```
 
 #### Optimistic
@@ -167,28 +194,43 @@ editableTodoActions.update({completed: false}) // update('todo', {completed: fal
 #### optimisticUpdate(ref, entities)
 Creates an optimistic update optimisticUpdate that can be referenced by the provided ref
 
+```js
+import { schema, normalize } from 'normalizr';
+import { optimisticUpdate } from 'alexs-redux-fetch/entities/actions';
+
+const todo = new schema.Entity('todo');
+
+optimisticUpdate('TODO/1/SAVE', normalize({id: 1, completed: false}), todo)
+```
+
 #### cancelOptimisticUpdate(ref)
 Cancels the optimistic update for the given ref
 
+```js
+import { cancelOptimisticUpdate } from 'alexs-redux-fetch/entities/actions';
+
+cancelOptimisticUpdate('TODO/1/SAVE')
+```
+
 ### Selectors
 
-#### getById(state, entityName, id)
+#### getById(state, entityName, id) -> (Entity | undefined)
 Returns the entity for the given type and id.
 
-#### getAll
+#### getAll -> []
 Returns all entities currently stored for the given entityName.
 
-*Note: This isn't recommended, as it just does an Object.values(), it is probably better to keep a list of ids stored to loop through rather than getting all items*
+Using this function isn't recommended, as it just does an Object.values(), it is probably better to keep a list of ids stored to loop through rather than getting all items*
 
-#### getTimestamp(state, entityName, id)
+#### getTimestamp(state, entityName, id) -> (timestamp | undefined)
 Returns the timestamp of when the entity was last written into.
 
 *Note: This doesn't take into account your reducers passed into createEntityReducer*
 
-#### getEditable(state, entityName)
+#### getEditable(state, entityName) -> (Entity | undefined)
 Returns the current editable entity.
 
-#### createEntitySelector(entityName, selectors = entitySelectors)
+#### createEntitySelectors(entityName, selectors = entitySelectors) -> {}
 Wraps all of the entity selectors, passing entityName in as the second param to each one.
 
 You can also pass in your own selectors if you have added onto the provided entity selectors.
@@ -268,8 +310,22 @@ The steps this actions takes looks like
 
 ### Selectors
 
-#### getStatus
+#### getStatus(state, ref) -> (NOT_LOADED | LOADED | FETCHING | FAILED)
+Returns the status of the api, if no status is in state this function will return NOT_LOADED.
 
-#### getIsSlow
+#### getIsSlow(state, ref) -> Bool
+Returns whether or not a ref is currently listed as slow.
 
-#### getFailedAttempts
+#### getFailedAttempts(state, ref) -> Int
+Returns the amount of failed attempts for the given ref
+
+### Helpers
+
+#### fetchType(ref) -> String
+Returns the action type used for when an api with the provided ref has been called.
+
+#### successType(ref) -> String
+Returns the action type used for when an api with the provided ref is successful.
+
+#### failedType(ref) -> String
+Returns the action type used for when an api with the provided ref has failed.
