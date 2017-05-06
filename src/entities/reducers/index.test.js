@@ -3,7 +3,7 @@ import createByIdReducer from '../utils/create-by-id-reducer';
 import timestamp, { selectors as timestampSelectors } from './timestamp';
 import editable, { selectors as editableSelectors } from './editable';
 import optimistic, { selectors as optimisticSelectors } from './optimistic'
-import reducer, { createEntityReducer, selectors } from './index';
+import createEntityReducer, { selectors } from './index';
 
 /**
  * Hackety hack hack
@@ -49,23 +49,6 @@ jest.mock('./optimistic', () => mockImport(
 ))
 
 describe('entities root reducer', () => {
-  describe('reducer', () => {
-    let result
-
-    beforeEach(() => {
-      result = reducer(undefined, { type: 'SOME_ACTION' })
-    })
-
-    it('is composed of all sub reducers', () => {
-      expect(result).toEqual({
-        byId: 'byId reducer',
-        timestamp: 'timestamp reducer',
-        editable: 'editable reducer',
-        optimistic: 'optimistic reducer'
-      })
-    })
-  })
-
   describe('createEntityReducer', () => {
     let result
     beforeEach(() => {

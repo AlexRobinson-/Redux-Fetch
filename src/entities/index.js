@@ -1,7 +1,7 @@
-import reducer, { selectors, createEntityReducer } from './reducers';
+import createEntityReducer, { selectors } from './reducers';
 import createEntitySelectors from './utils/create-entity-selectors';
 
-export default reducer;
+export default createEntityReducer;
 
 export {
   createEntityReducer,

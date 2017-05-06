@@ -2,20 +2,14 @@ import { combineReducers } from 'redux';
 import nestSelectors from 'alexs-redux-helpers/selectors/nest-selectors';
 
 import fetch, { selectors as rawFetchSelectors } from './fetch';
-import entities, {
+import createEntityReducer, {
   selectors as rawEntitySelectors,
-  createEntitySelectors as rawCreateEntitySelectors,
-  createEntityReducer as rawCreateEntityReducer
+  createEntitySelectors as rawCreateEntitySelectors
 } from './entities';
 
-const reducer = combineReducers({
+const createReducer = reducers => combineReducers({
   fetch,
-  entities: (state, action) => entities(state, action)
-})
-
-const createEntityReducer = reducers => combineReducers({
-  fetch,
-  entities: rawCreateEntityReducer(reducers)
+  entities: createEntityReducer(reducers)
 })
 
 
@@ -29,11 +23,11 @@ const selectors = {
 
 const createEntitySelectors = (...args) => nestSelectors(rawCreateEntitySelectors(...args), state => state.entities);
 
-export default reducer;
+export default createReducer;
 
 export {
-  reducer,
   selectors,
   createEntityReducer,
+  createReducer,
   createEntitySelectors
 }

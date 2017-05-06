@@ -1,19 +1,12 @@
 import { combineReducers } from 'redux';
 import nestSelectors from 'alexs-redux-helpers/selectors/nest-selectors';
-import byId, { selectors as byIdSelectors } from './by-id';
+import { selectors as byIdSelectors } from './by-id';
 import createByIdReducer from '../utils/create-by-id-reducer';
 import timestamp, { selectors as timestampSelectors } from './timestamp';
 import editable, { selectors as editableSelectors } from './editable';
 import optimistic, { selectors as optimisticSelectors } from './optimistic'
 
-export default combineReducers({
-  byId,
-  timestamp,
-  editable,
-  optimistic
-});
-
-export const createEntityReducer = byIdReducers => combineReducers({
+export default (byIdReducers = {}) => combineReducers({
   byId: createByIdReducer(byIdReducers),
   timestamp,
   editable,

@@ -1,11 +1,11 @@
 # Redux Fetch
-A set of redux actions/selectors/selectors to handle making api calls that fetch data and then storing that data.
+A set of redux actions/selectors/reducers to handle making api calls that fetch data and then storing that data.
 
 ## About
 The library comes with two main modules 'Entities' and 'Fetch'.
 
 ### Entities
-A generic entity store based around the normalizr library that stores entities by their id, nested under their 'entityName' (e.g. users).
+A generic entity store based around the normalizr library that stores entities by their id.
 
 To add/update entities into this store, simply dispatch an action with an 'entities' payload.
 
@@ -19,7 +19,7 @@ dispatch({
 ```
 
 The entities reducer also comes with a few other sub-reducers/features. These include:
- - **Timestamp** For every entity added to the store, a timestamp is added to keep track of when the data was loaded.
+ - **Timestamp** For every entity added to the store, a timestamp is added to keep track of when the data was last put into the redux store.
  - **Optimistic** Allows you to optimistically update the entity store and roll back any failed/cancelled updates
  - **Editable** Allows you to have one editable entity at a time
  
@@ -28,8 +28,8 @@ This set of redux actions/reducers/selectors allow you to easily keep track of y
 
 This module keeps track of the following information:
  - **Failed count** How many times the api has failed without a successful response
- - **Timestamp** Stores the timestamp of the last successful attempt for a given api
- - **Slow** Keeps track of slow requests, useful for showing the user that you acknowledge the request is taking a while
+ - **Timestamp** When the last successful attempt for a given api was
+ - **Slow Connections** If a single request takes too long
 
 ## Usage
 All that is required to use this library is redux, although there are some things you can do to make the overall experience nicer 
@@ -42,48 +42,75 @@ All that is required to use this library is redux, although there are some thing
 - normalizr This will make it easy to normalize your data to be accepted into the generic entity store
 - redux-thunk Some of the fetch actions are provided as thunks, though I'm sure you could work around this if you really needed to
 
-### 2. Installing the reducer
-The library gives you two options:
-- default entity reducer 
-- custom entity reducer - allows you to pass in your own entity reducers that can manage entities (see createEntityReducer)
+### 2. Install the library
+```sh
+npm install alexs-redux-fetch
+```
 
-To keep it simple, I'll just demo the default reducer here
+### 3. Installing the reducer
+Import createReducer from the library and add it into your root reducer.
+
+*Look at the createReducer docs for more you can do with this*
 
 ```js
 // your root reducer
-import entities from 'alexs-redux-fetch';
+import createReducer from 'alexs-redux-fetch';
 
 export default combineReducers({
-  // your other reducers,
-  entities
+  ..., // your other reducers,
+  api: createReducer()
 })
 ```
 
-### 3. Set up your selectors (optional)
-Where ever you keep your selectors, I recommend using the createEntitySelectors function to generate entity specific selectors to save you passing in the entityName each time.
+### 4. Set up your selectors (optional, but recommended)
+In whichever file you keep your selectors, import createEntitySelectors.
 
-At the moment the selectors will be generated to access the state as if it isn't alongisde any other reducer (i.e. not using combineReducers).
-To fix this, for now I recommend using something like the nestSelectors function from my Redux-Helpers library to nest them under their top level state.
-
-I'll most likely update this library to add this functionality into the createEntitySelectors function.
+This function takes three parameters
+- Entity name - the name of the entity you want to create selectors for. This will also be the name you use with the normalizr library
+- Get state (optional) - A function that returns the sub-state for where you keep this library (defaults to returning the passed in state)
+- Selectors (optional - should be rarely used) - The selectors you want to generate for the entity (will default to the the packages selectors, look at documentation for more information).
 
 ```js
 // wherever-you-keep-selectors.js (I normally keep them in same file as their reducer)
-import nestSelectors from 'alexs-redux-helpers/selectors/nest-selectors';
 import { createEntitySelector } from 'alexs-redux-fetch';
 
 // your selectors
 
-export const todoSelectors = nestSelectors(createEntitySelector('todo'), state => state.entities);
+export const todoSelectors = createEntitySelector('todo', state => state.api);
+export const userSelectors = createEntitySelector('user', state => state.api);
 ```
 
-### 4. Set up your api code (optional)
-As mentioned in the about section, the entity reducer will add any entities in the action payload.
+### 5. Using the fetch actions
+The way the fetch feature keeps track of your individual api calls is via a unique key.
+It is recommended that you create key generator functions to easily produce these keys.
+
+```js
+import { fetchAction } from 'alexs-redux-fetch/fetch/actions';
+
+const fetchTodoApi = id => api(`/todos/${id}`)
+const fetchTodoKey = id => `/TODO/${id}/GET`;
+
+const saveTodoApi = (id, fields) => api.post(`/todos/${id}`, fields)
+const saveTodoKey = id => `/TODO/${id}/SAVE`;
+
+export const fetchTodo = id => fetchAction(
+  fetchTodoKey(id),
+  fetchTodo(id)
+);
+
+export const saveTodo = (id, fields) => fetchAction(
+  saveTodoKey(id),
+  saveTodoApi(id, fields)
+);
+```
+
+### 6. Set up your api code (optional)
+As mentioned in the above section, the entity reducer will use any entities from the action payload.
 
 The fetchAction thunk in this library will add whatever your api/promise resolves with to the action payload.
 So to make your action files a little cleaner, add your normalization code to your api functions.
 
-Finally, the fetchAction thunk is expecting your api/promise to resolve with an object with either a response or error key. This can be added to the api code as well.
+Note: the fetchAction thunk is expecting your api/promise to resolve with an object with either a response or error key. This can be added to the api code as well.
 
 Example:
 ```js
@@ -229,6 +256,7 @@ Config takes the options:
 #### fetchAction(ref, promise, config) [thunk]
 This action handles the whole life cycle of an api request.
 
+The steps this actions takes looks like
 1. If config.optimistic provided, it will dispatch an optimisticUpdate
 2. Dispatch fetchRequest
 3. Dispatch connectionStats
