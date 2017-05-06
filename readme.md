@@ -222,6 +222,8 @@ Returns all entities currently stored for the given entityName.
 
 Using this function isn't recommended, as it just does an Object.values(), it is probably better to keep a list of ids stored to loop through rather than getting all items*
 
+For now you will need to create these lists of ids.
+
 #### getTimestamp(state, entityName, id) -> (timestamp | undefined)
 Returns the timestamp of when the entity was last written into.
 
