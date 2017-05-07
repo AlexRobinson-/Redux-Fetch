@@ -353,11 +353,11 @@ At the moment this async action just tracks slow requests, however it may be exp
 Config takes the options:
  - slowTimeout (default 3 seconds) - how long to wait before dispatching slowConnection
 
-#### fetchAction(ref, promise, config) [thunk]
+#### fetchAction(ref, promise, optimistic) [thunk]
 This action handles the whole life cycle of an api request.
 
 The steps this actions takes looks like
-1. If config.optimistic provided, it will dispatch an optimisticUpdate
+1. If optimistic provided, it will dispatch an optimisticUpdate
 2. Dispatch fetchRequest
 3. Dispatch connectionStats
 4.  If promise resolves with an object with an 'error' ref, dispatches fetchFailure
