@@ -41,7 +41,7 @@ export default createMultiReducer({
       }
     })
   }),
-  error: (state, action) => {
+  error: (state = {}, action) => {
     if (!action || !action.meta || !action.meta.fetch) {
       return state;
     }
