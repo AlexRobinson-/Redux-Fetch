@@ -240,7 +240,7 @@ import { optimisticUpdate } from 'alexs-redux-fetch/entities/actions';
 
 const todo = new schema.Entity('todo');
 
-optimisticUpdate('TODO/1/SAVE', normalize({id: 1, completed: false}), todo)
+optimisticUpdate('TODO/1/SAVE', normalize({id: 1, completed: false}, todo))
 ```
 
 ##### cancelOptimisticUpdate(ref)
