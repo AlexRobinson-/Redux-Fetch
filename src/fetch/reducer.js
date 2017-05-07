@@ -41,12 +41,27 @@ export default createMultiReducer({
       }
     })
   }),
-  error: createMetaReducer('fetch', createDynamicReducer({
-    initial: null,
-    [REQUEST]: [action => action.ref, null],
-    [SUCCESS]: [action => action.ref, null],
-    [FAILURE]: [action => action.ref, (_, action) => action.payload.error]
-  }))
+  error: (state, action) => {
+    if (!action || !action.meta || !action.meta.fetch) {
+      return state;
+    }
+
+    if (action.meta.fetch.type === REQUEST || action.meta.fetch.type === SUCCESS) {
+      return {
+        ...state,
+        [action.meta.fetch.ref]: null
+      };
+    }
+
+    if (action.meta.fetch.type === FAILURE) {
+      return {
+        ...state,
+        [action.meta.fetch.ref]: action.payload.error
+      };
+    }
+
+    return state;
+  }
 });
 
 const getIsLoading = ({ status }, ref) => {
