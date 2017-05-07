@@ -46,7 +46,7 @@ export const connectionStats = (ref, promise, { slowTimeout = 3000 } = {}) => di
     )
 }
 
-export const fetchAction = (ref, promise, { optimistic } = {}) =>
+export const fetchAction = (ref, promise, optimistic) =>
   (dispatch, getState) =>
     new Promise(res => {
       if (optimistic) {
