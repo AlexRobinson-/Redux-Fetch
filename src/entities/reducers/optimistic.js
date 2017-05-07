@@ -27,10 +27,10 @@ const reducer = createMultiReducer({
   },
   order: {
     initial: [],
-    [OPTIMISTIC_UPDATE]: (state, action) => ([
+    [OPTIMISTIC_UPDATE]: (state, action) => state.includes(action.payload.ref) ? state : [
       ...state,
       action.payload.ref
-    ]),
+    ],
     [CANCEL_OPTIMISTIC_UPDATE]: (state, action) => state.filter(ref => ref !== action.payload.ref),
     default: createMetaReducer('fetch', createReducer({
       initial: [],
