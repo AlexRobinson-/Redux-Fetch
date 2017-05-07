@@ -40,7 +40,13 @@ export default createMultiReducer({
         [action.ref]: null
       }
     })
-  })
+  }),
+  error: createMetaReducer('fetch', createDynamicReducer({
+    initial: null,
+    [REQUEST]: [action => action.ref, null],
+    [SUCCESS]: [action => action.ref, null],
+    [FAILURE]: [action => action.ref, (_, action) => action.payload.error]
+  }))
 });
 
 const getIsLoading = ({ status }, ref) => {
@@ -81,11 +87,14 @@ const getHasFailed = (state, ref) => state.status[ref] === FAILED
 
 const getStatus = (state, ref) => state.status[ref] || NOT_LOADED;
 
+const getErrorMessage = (state, ref) => state.error[ref];
+
 export const selectors = {
   getIsLoading,
   getIsFailing,
   getIsSlow,
   getFailedAttempts,
   getHasFailed,
-  getStatus
+  getStatus,
+  getErrorMessage
 }
