@@ -4,6 +4,8 @@ A set of redux actions/selectors/reducers to handle making api calls that fetch 
 ## About
 The library comes with two main features 'Entities' and 'Fetch'.
 
+For inspiration on how to use this library, check out [my example project](https://github.com/AlexRobinson-/redux-fetch-example)
+
 ### Entities
 A generic entity store based around the normalizr library that stores entities by their id.
 
