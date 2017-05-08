@@ -21,7 +21,7 @@ const selectors = {
   entities: entitySelectors
 }
 
-const createEntitySelectors = (type, getState, ...args) => rawCreateEntitySelectors(type, state => getState(state).entities, ...args);
+const createEntitySelectors = (type, getState, baseSelectors) => rawCreateEntitySelectors(type, state => getState(state), baseSelectors || entitySelectors);
 const createFetchSelectors = (getState = state => state) => nestSelectors(fetchSelectors, getState);
 
 export default createReducer;
