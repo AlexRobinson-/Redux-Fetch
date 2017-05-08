@@ -328,7 +328,7 @@ Each action will have the following effects
     - resets connection stats info (e.g. slow) 
 
 ##### Request
-    - status for the given ref will be set to FETCHING
+    - status for the given ref will be set to PENDING
     - timestamp for the given ref will be set to null
     
 ##### Success
@@ -368,7 +368,7 @@ The steps this actions takes looks like
 
 ### Selectors
 
-#### getStatus(state, ref) -> (NOT_LOADED | LOADED | FETCHING | FAILED)
+#### getStatus(state, ref) -> (NOT_LOADED | LOADED | PENDING | FAILED)
 Returns the status of the api, if no status is in state this function will return NOT_LOADED.
 
 #### getIsSlow(state, ref) -> Bool

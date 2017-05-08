@@ -1,6 +1,6 @@
 import reducer, { selectors } from './reducer';
 import { connectionStats, fetchAction } from './actions';
-import { SUCCESS, FAILED, FETCHING, FETCH_ACTION_TYPES } from './constants';
+import { SUCCESS, FAILED, PENDING, FETCH_ACTION_TYPES } from './constants';
 
 export default reducer
 export {
@@ -11,5 +11,5 @@ export {
 };
 
 export const successType = ref => `${ref}_${SUCCESS}`;
-export const fetchingType = ref => `${ref}_${FETCHING}`;
+export const pendingType = ref => `${ref}_${PENDING}`;
 export const failedType = ref => `${ref}_${FAILED}`;

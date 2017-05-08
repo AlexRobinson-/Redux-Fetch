@@ -5,7 +5,7 @@ import {
 } from 'alexs-redux-helpers/reducers'
 import {
   NOT_LOADED,
-  FETCHING,
+  PENDING,
   LOADED,
   FAILED,
   REQUEST,
@@ -17,7 +17,7 @@ import {
 export default createMultiReducer({
   status: createMetaReducer('fetch', createDynamicReducer({
     initial: NOT_LOADED,
-    [REQUEST]: [action => action.ref, FETCHING],
+    [REQUEST]: [action => action.ref, PENDING],
     [SUCCESS]: [action => action.ref, LOADED],
     [FAILURE]: [action => action.ref, FAILED]
   })),
@@ -64,8 +64,8 @@ export default createMultiReducer({
   }
 });
 
-const getIsLoading = ({ status }, ref) => {
-  return !!status[ref] && status[ref] === FETCHING
+const getIsPending = ({ status }, ref) => {
+  return !!status[ref] && status[ref] === PENDING
 }
 
 const getIsFailing = (state, ref) => {
@@ -105,7 +105,7 @@ const getStatus = (state, ref) => state.status[ref] || NOT_LOADED;
 const getErrorMessage = (state, ref) => state.error[ref];
 
 export const selectors = {
-  getIsLoading,
+  getIsPending,
   getIsFailing,
   getIsSlow,
   getFailedAttempts,

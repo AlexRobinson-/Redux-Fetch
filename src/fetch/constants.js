@@ -1,5 +1,5 @@
 export const NOT_LOADED = 'NOT_LOADED'
-export const FETCHING = 'FETCHING'
+export const PENDING = 'PENDING'
 export const LOADED = 'LOADED'
 export const FAILED = 'FAILED'
 
