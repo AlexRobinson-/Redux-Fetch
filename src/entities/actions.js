@@ -7,6 +7,9 @@ import {
   OPTIMISTIC_UPDATE,
   CANCEL_OPTIMISTIC_UPDATE
 } from './action-types';
+import {
+  CANCEL_REQUEST
+} from './../fetch/constants';
 
 /**
  * Editable
@@ -41,6 +44,6 @@ export const optimisticUpdate = (ref, optimisticEntities) => action(
   }
 )
 
-export const cancelOptimisticUpdate = ref => action(CANCEL_OPTIMISTIC_UPDATE, { ref })
+export const cancelOptimisticUpdate = ref => action(CANCEL_OPTIMISTIC_UPDATE, { ref }, { ref, type: CANCEL_REQUEST })
 
 
