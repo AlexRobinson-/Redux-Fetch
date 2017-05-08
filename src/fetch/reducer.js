@@ -90,7 +90,7 @@ const getIsFailing = (state, ref) => {
 }
 
 const getIsSlow = (state, ref) => {
-  if (!getIsLoading(state, ref)) {
+  if (!getIsPending(state, ref)) {
     return false;
   }
 
