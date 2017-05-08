@@ -1,6 +1,6 @@
 {
   "name": "alexs-redux-fetch",
-  "version": "1.0.33",
+  "version": "1.0.34",
   "main": "lib/redux-fetch.js",
   "jsnext:main": "lib/index.js",
   "module": "lib/index.js",
