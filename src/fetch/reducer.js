@@ -11,7 +11,7 @@ import {
   REQUEST,
   SUCCESS,
   FAILURE,
-  CANCEL_REQUEST,
+  CANCEL,
   SLOW_CONNECTION,
 } from './constants';
 
@@ -21,13 +21,13 @@ export default createMultiReducer({
     [REQUEST]: [action => action.ref, PENDING],
     [SUCCESS]: [action => action.ref, LOADED],
     [FAILURE]: [action => action.ref, FAILED],
-    [CANCEL_REQUEST]: [action => action.ref, null]
+    [CANCEL]: [action => action.ref, null]
   })),
   failedCount: createMetaReducer('fetch', createDynamicReducer({
     initial: 0,
     [SUCCESS]: [action => action.ref, 0],
     [FAILURE]: [action => action.ref, state => state + 1],
-    [CANCEL_REQUEST]: [action => action.ref, 0]
+    [CANCEL]: [action => action.ref, 0]
   })),
   timestamp: createMetaReducer('fetch', createDynamicReducer({
     initial: null,
@@ -49,7 +49,7 @@ export default createMultiReducer({
       return state;
     }
 
-    if (action.meta.fetch.type === REQUEST || action.meta.fetch.type === SUCCESS || action.meta.fetch.type === CANCEL_REQUEST) {
+    if (action.meta.fetch.type === REQUEST || action.meta.fetch.type === SUCCESS || action.meta.fetch.type === CANCEL) {
       return {
         ...state,
         [action.meta.fetch.ref]: null

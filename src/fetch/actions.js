@@ -4,7 +4,7 @@ import {
   REQUEST,
   SUCCESS,
   FAILURE,
-  CANCEL_REQUEST
+  CANCEL
 } from './constants'
 import { optimisticUpdate } from './../entities/actions';
 
@@ -19,7 +19,7 @@ const _fetchAction = (payload = {}, meta = {}, ref, status) => action(
 export const fetchRequest = (ref, payload, meta) => _fetchAction(payload, meta, ref, REQUEST)
 export const fetchSuccess = (ref, payload, meta) => _fetchAction(payload, meta, ref, SUCCESS)
 export const fetchFailure = (ref, payload, meta) => _fetchAction(payload, meta, ref, FAILURE)
-export const fetchCancel = (ref, payload, meta) => _fetchAction(payload, meta, ref, CANCEL_REQUEST)
+export const fetchCancel = (ref, payload, meta) => _fetchAction(payload, meta, ref, CANCEL)
 
 const slowConnectionTimer = timeout => new Promise(res => {
   setTimeout(() => res({ slow: true }), timeout)
