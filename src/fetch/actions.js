@@ -3,9 +3,9 @@ import {
   SLOW_CONNECTION,
   REQUEST,
   SUCCESS,
-  FAILURE
+  FAILURE,
+  CANCEL_REQUEST
 } from './constants'
-import { selectors } from './reducer'
 import { optimisticUpdate } from './../entities/actions';
 
 export const slowConnection = ref => action(SLOW_CONNECTION, { ref })
@@ -19,6 +19,7 @@ const _fetchAction = (payload = {}, meta = {}, ref, status) => action(
 export const fetchRequest = (ref, payload, meta) => _fetchAction(payload, meta, ref, REQUEST)
 export const fetchSuccess = (ref, payload, meta) => _fetchAction(payload, meta, ref, SUCCESS)
 export const fetchFailure = (ref, payload, meta) => _fetchAction(payload, meta, ref, FAILURE)
+export const fetchCancel = (ref, payload, meta) => _fetchAction(payload, meta, ref, CANCEL_REQUEST)
 
 const slowConnectionTimer = timeout => new Promise(res => {
   setTimeout(() => res({ slow: true }), timeout)

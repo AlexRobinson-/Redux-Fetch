@@ -44,6 +44,14 @@ export const optimisticUpdate = (ref, optimisticEntities) => action(
   }
 )
 
-export const cancelOptimisticUpdate = ref => action(CANCEL_OPTIMISTIC_UPDATE, { ref }, { ref, type: CANCEL_REQUEST })
+export const cancelOptimisticUpdate = ref => action(
+  CANCEL_OPTIMISTIC_UPDATE,
+  { ref },
+  {
+    fetch: {
+      ref,
+      type: CANCEL_REQUEST
+    }
+  })
 
 
