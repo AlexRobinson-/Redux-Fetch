@@ -31,5 +31,7 @@ export {
   createEntityReducer,
   createReducer,
   createEntitySelectors,
-  createFetchSelectors
+  createFetchSelectors,
+  fetchSelectors,
+  entitySelectors
 }
