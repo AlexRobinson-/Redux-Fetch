@@ -9,12 +9,13 @@ export const SLOW_CONNECTION = 'SLOW_CONNECTION'
 export const REQUEST = 'REQUEST';
 export const SUCCESS = 'SUCCESS';
 export const FAILURE = 'FAILURE';
-export const CANCEL_REQUEST = 'CANCEL_REQUEST';
+export const CANCEL = 'CANCEL';
 
 export const FETCH_ACTION_TYPES = {
   REQUEST,
   SUCCESS,
-  FAILURE
+  FAILURE,
+  CANCEL
 }
 
 export const FETCH_REQUEST = 'FETCH_REQUEST'

@@ -4,12 +4,11 @@ import {
   BEGIN_NEW,
   UPDATE_EDITABLE,
   STOP_EDITING,
-  OPTIMISTIC_UPDATE,
-  CANCEL_OPTIMISTIC_UPDATE
+  OPTIMISTIC_UPDATE
 } from './action-types';
 import {
-  CANCEL_REQUEST
-} from './../fetch/constants';
+  fetchCancel
+} from './../fetch/actions';
 
 /**
  * Editable
@@ -44,14 +43,6 @@ export const optimisticUpdate = (ref, optimisticEntities) => action(
   }
 )
 
-export const cancelOptimisticUpdate = ref => action(
-  CANCEL_OPTIMISTIC_UPDATE,
-  { ref },
-  {
-    fetch: {
-      ref,
-      type: CANCEL_REQUEST
-    }
-  })
+export const cancelOptimisticUpdate = ref => fetchCancel(ref)
 
 

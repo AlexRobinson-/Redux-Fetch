@@ -13,13 +13,13 @@ const reducer = createMultiReducer({
       ...state,
       [action.payload.ref]: action.payload.optimisticEntities
     }),
-    [CANCEL_OPTIMISTIC_UPDATE]: (state, action) => ({
-      ...state,
-      [action.payload.ref]: undefined
-    }),
     default: createMetaReducer('fetch', createReducer({
       initial: {},
       [FETCH_ACTION_TYPES.SUCCESS]: (state, action) => ({
+        ...state,
+        [action.ref]: undefined
+      }),
+      [FETCH_ACTION_TYPES.CANCEL]: (state, action) => ({
         ...state,
         [action.ref]: undefined
       })
