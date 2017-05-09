@@ -32,6 +32,7 @@ This module keeps track of the following information:
  - **Failed count** How many times the api has failed without a successful response
  - **Timestamp** When the last successful attempt for a given api was
  - **Slow Connections** If a single request takes too long
+ - **Error** The error message of the last failed attempt
 
 ## Usage
 All that is required to use this library is redux, although there are some things you can do to make the overall experience nicer 
@@ -65,9 +66,10 @@ export default combineReducers({
 ```
 
 ### 4. Set up your selectors (optional, but recommended)
-In whichever file you keep your selectors:
+The entity and fetch selectors are provided seperately, so in whichever file you keep your selectors:
 
-**Entity Selectors**
+#### Entity Selectors
+
 The easiest way to use the entity selectors is with the createEntitySelectors, which generates selectors for a specific entity.
 
 createEntitySelectors function takes three parameters
@@ -75,8 +77,11 @@ createEntitySelectors function takes three parameters
 - Get state (optional) - A function that returns the sub-state for where you keep this library (defaults to returning the passed in state)
 - Selectors (optional - should be rarely used) - The selectors you want to generate for the entity (will default to the the packages selectors, look at documentation for more information).
 
-**Fetch Selectors**
+#### Fetch Selectors
+
 To use the fetch selectors use createFetchSelectors, which takes one argument to get the state.   
+
+#### Example
 
 ```js
 // wherever-you-keep-selectors.js (I normally keep them in same file as their reducer)
@@ -145,9 +150,11 @@ import * as todoApi from '/api/todo';
 export const fetchTodos = () => fetchAction('ALL_TODOS', todoApi.fetchAll())
 ```
 
-## Core
+## Api
 
-### createReducer(byIdReducers - optional)
+### Core
+
+#### createReducer(byIdReducers - optional)
 This will create the reducer for you to add into your root reducer.
 
 The function takes optional sub-reducers that you can provide to co-manage specific entity states for instances where you can't provide the necessary update in a entities action payload.
@@ -177,13 +184,13 @@ export default combineReducers({
 
 ```
 
-## Entities
+### Entities
 
-### Actions
+#### Actions
 
-#### Editable
+##### Editable
 
-##### beginEditing(entityName, fields)
+###### beginEditing(entityName, fields)
 Assigns the fields to the editable entity
 
 ```js
@@ -192,7 +199,7 @@ import { beginEditing } from 'alexs-redux-fetch/entities/actions';
 beginEditing('todo', {id: '123', title: 'Do stuff'})
 ```
 
-##### beginNew(entityName)
+###### beginNew(entityName)
 Sets the editable entity to an empty object
 
 ```js
@@ -201,7 +208,7 @@ import { beginNew } from 'alexs-redux-fetch/entities/actions';
 beginNew('todo')
 ```
 
-##### update
+###### update
 Merges the fields into the editable entity
 
 ```js
@@ -210,7 +217,7 @@ import { update } from 'alexs-redux-fetch/entities/actions';
 update('todo', {title: 'Do other stuff'})
 ```
 
-##### stopEditing
+###### stopEditing
 Sets the editable entity to null
 
 ```js
@@ -219,7 +226,7 @@ import { stopEditing } from 'alexs-redux-fetch/entities/actions';
 stopEditing('todo')
 ```
 
-##### createEditActions(entityName)
+###### createEditActions(entityName)
 Wraps all of the editable entity actions with the entityName
 
 ```js
@@ -231,9 +238,9 @@ editTodoActions.update({completed: false})
 
 ```
 
-#### Optimistic
+##### Optimistic
 
-##### optimisticUpdate(ref, entities)
+###### optimisticUpdate(ref, entities)
 Creates an optimistic update optimisticUpdate that can be referenced by the provided ref.
 
 ```js
@@ -245,7 +252,7 @@ const todo = new schema.Entity('todo');
 optimisticUpdate('TODO/1/SAVE', normalize({id: 1, completed: false}, todo))
 ```
 
-##### cancelOptimisticUpdate(ref)
+###### cancelOptimisticUpdate(ref)
 Cancels the optimistic update for the given ref
 
 ```js
@@ -254,9 +261,9 @@ import { cancelOptimisticUpdate } from 'alexs-redux-fetch/entities/actions';
 cancelOptimisticUpdate('TODO/1/SAVE')
 ```
 
-### Selectors
+#### Selectors
 
-#### getById(state, entityName, id) -> (Entity | undefined)
+##### getById(state, entityName, id) -> (Entity | undefined)
 Returns the entity for the given type and id.
 
 If the entity has been optimistically updated, the object will have the added information
@@ -267,7 +274,7 @@ If the entity has been optimistically updated, the object will have the added in
 }
 ```
 
-#### getAll -> []
+##### getAll -> []
 Returns all entities currently stored for the given entityName.
 
 Using this function isn't recommended, as it just does an Object.values(), it is probably better to keep a list of ids stored to loop through rather than getting all items*
@@ -282,15 +289,15 @@ If the entity has been optimistically updated, the object will have the added in
 }
 ```
 
-#### getTimestamp(state, entityName, id) -> (timestamp | undefined)
+##### getTimestamp(state, entityName, id) -> (timestamp | undefined)
 Returns the timestamp of when the entity was last written into.
 
 *Note: This doesn't take into account your reducers passed into createReducer*
 
-#### getEditable(state, entityName) -> (Entity | undefined)
+##### getEditable(state, entityName) -> (Entity | undefined)
 Returns the current editable entity.
 
-#### createEntitySelectors(entityName, selectors = entitySelectors) -> {}
+##### createEntitySelectors(entityName, selectors = entitySelectors) -> {}
 All of the above selectors are in the format (state, entityName, ...params). So to avoid passing in entityName each time, you can use createEntitySelectors to generate entity specific selectors.
 
 You can also pass in your own selectors if you have added onto the provided entity selectors, your custom selectors must be in the format (state, entityName, ...params).
@@ -301,11 +308,11 @@ const todoSelectors = createEntitySelectors('todo')
 todoSelectors.getById(state, 123) // getById(state, 'todo', 123)
 ```
 
-## Fetch
+### Fetch
 
-### Actions
+#### Actions
 
-#### fetch(Request|Success|Failure)(ref, payload = {}, meta = {})
+##### fetch(Request|Success|Failure)(ref, payload = {}, meta = {})
 Although you probably won't need to access these methods as fetchAction should cover most use cases, they are provided anyway.
 
 Each generates a single action with the required meta data for the fetch reducers to detect.
@@ -326,36 +333,36 @@ Each action will generally look like this
 
 Each action will have the following effects
 
-##### All
+###### All
     - resets connection stats info (e.g. slow) 
 
-##### Request
+###### Request
     - status for the given ref will be set to PENDING
     - timestamp for the given ref will be set to null
     
-##### Success
+###### Success
     - status for the given ref will be set to LOADED
     - timestamp for the given ref will be set
     - resets failed count back to 0
     
-##### Failure
+###### Failure
     - status for the given ref will be set to FAILED
     - increases the failed count by 1
 
-#### slowConnection(ref)
+##### slowConnection(ref)
 Again, like the individual fetch actions above, you probably won't need to use this, as it is bundled with the connectionStats thunk which is itself called from the fetchAction thunk.
 
 Dispatching this action will list the ref as a slow request.
 
 *Note: This gets reset any time one of the fetch actions is dispatched*
 
-#### connectionStats(ref, promise, config) [thunk]
+##### connectionStats(ref, promise, config) [thunk]
 At the moment this async action just tracks slow requests, however it may be expanded in the future.
 
 Config takes the options:
  - slowTimeout (default 3 seconds) - how long to wait before dispatching slowConnection
 
-#### fetchAction(ref, promise, optimistic) [thunk]
+##### fetchAction(ref, promise, optimistic) [thunk]
 This action handles the whole life cycle of an api request.
 
 The steps this actions takes looks like
@@ -368,24 +375,24 @@ The steps this actions takes looks like
     
     If promise resolves with an object with a 'response' ref, dispatches fetchSuccess
 
-### Selectors
+#### Selectors
 
-#### getStatus(state, ref) -> (NOT_LOADED | LOADED | PENDING | FAILED)
+##### getStatus(state, ref) -> (NOT_LOADED | LOADED | PENDING | FAILED)
 Returns the status of the api, if no status is in state this function will return NOT_LOADED.
 
-#### getIsSlow(state, ref) -> Bool
+##### getIsSlow(state, ref) -> Bool
 Returns whether or not a ref is currently listed as slow.
 
-#### getFailedAttempts(state, ref) -> Int
+##### getFailedAttempts(state, ref) -> Int
 Returns the amount of failed attempts for the given ref
 
-### Helpers
+#### Helpers
 
-#### fetchType(ref) -> String
+##### fetchType(ref) -> String
 Returns the action type used for when an api with the provided ref has been called.
 
-#### successType(ref) -> String
+##### successType(ref) -> String
 Returns the action type used for when an api with the provided ref is successful.
 
-#### failedType(ref) -> String
+##### failedType(ref) -> String
 Returns the action type used for when an api with the provided ref has failed.
