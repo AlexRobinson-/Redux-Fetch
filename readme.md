@@ -238,7 +238,7 @@ editTodoActions.update({completed: false})
 
 ```
 
-##### Optimistic
+##### Optimistic Updates
 
 ###### optimisticUpdate(ref, entities)
 Creates an optimistic update optimisticUpdate that can be referenced by the provided ref.
@@ -249,11 +249,13 @@ import { optimisticUpdate } from 'alexs-redux-fetch/entities/actions';
 
 const todo = new schema.Entity('todo');
 
-optimisticUpdate('TODO/1/SAVE', normalize({id: 1, completed: false}, todo))
+optimisticUpdate('TODO/1/SAVE', normalize({id: 1, completed: false}, todo).entities)
 ```
 
 ###### cancelOptimisticUpdate(ref)
 Cancels the optimistic update for the given ref
+
+*Note: This now just calls fetchCancel*
 
 ```js
 import { cancelOptimisticUpdate } from 'alexs-redux-fetch/entities/actions';
@@ -274,7 +276,7 @@ If the entity has been optimistically updated, the object will have the added in
 }
 ```
 
-##### getAll -> []
+##### getAll(state, entityName) -> []
 Returns all entities currently stored for the given entityName.
 
 Using this function isn't recommended, as it just does an Object.values(), it is probably better to keep a list of ids stored to loop through rather than getting all items*
@@ -312,7 +314,7 @@ todoSelectors.getById(state, 123) // getById(state, 'todo', 123)
 
 #### Actions
 
-##### fetch(Request|Success|Failure)(ref, payload = {}, meta = {})
+##### fetch(Request|Success|Failure|Cancel)(ref, payload = {}, meta = {})
 Although you probably won't need to access these methods as fetchAction should cover most use cases, they are provided anyway.
 
 Each generates a single action with the required meta data for the fetch reducers to detect.
@@ -348,6 +350,11 @@ Each action will have the following effects
 ###### Failure
     - status for the given ref will be set to FAILED
     - increases the failed count by 1
+    
+###### Cancel
+    - status for the given ref will be set to null
+    - resets failed count back to 0    
+    - cancels any optimistic updates for the given ref
 
 ##### slowConnection(ref)
 Again, like the individual fetch actions above, you probably won't need to use this, as it is bundled with the connectionStats thunk which is itself called from the fetchAction thunk.
@@ -380,11 +387,21 @@ The steps this actions takes looks like
 ##### getStatus(state, ref) -> (NOT_LOADED | LOADED | PENDING | FAILED)
 Returns the status of the api, if no status is in state this function will return NOT_LOADED.
 
+##### getIsPending(state, ref) -> Bool
+Returns whether or not a ref is currently pending.
+
 ##### getIsSlow(state, ref) -> Bool
 Returns whether or not a ref is currently listed as slow.
 
 ##### getFailedAttempts(state, ref) -> Int
 Returns the amount of failed attempts for the given ref
+
+##### getTimestamp(state, ref) -> timestamp
+Returns the timestamp of the last successful api request for the given ref.
+
+##### getErrorMessage(state, ref) -> Any (Whatever you set as the error message)
+Returns the error message for the give ref.
+
 
 #### Helpers
 
@@ -396,3 +413,6 @@ Returns the action type used for when an api with the provided ref is successful
 
 ##### failedType(ref) -> String
 Returns the action type used for when an api with the provided ref has failed.
+
+##### cancelType(ref) -> String
+Returns the action type used for when an api with the provided ref is cancelled.
