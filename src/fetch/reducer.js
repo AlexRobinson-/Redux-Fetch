@@ -107,7 +107,7 @@ const getStatus = (state, ref) => state.status[ref] || NOT_LOADED;
 
 const getErrorMessage = (state, ref) => state.error[ref];
 
-const getTimestamp = (state, ref) => state.timestamp;
+const getTimestamp = (state, ref) => state.timestamp[ref];
 
 export const selectors = {
   getIsPending,
