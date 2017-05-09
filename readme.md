@@ -1,418 +1,121 @@
 # Redux Fetch
 A set of redux actions/selectors/reducers to handle making api calls that fetch data and then storing that data.
 
-## About
-The library comes with two main features 'Entities' and 'Fetch'.
+## Overview
+This library comes with two main features: 'Fetch' and 'Entities'.
 
-For inspiration on how to use this library, check out [my example project](https://github.com/AlexRobinson-/redux-fetch-example)
+The general idea behind them is:
+- **Entities** handles storing, editing and optimistically updating pieces of data
+- **Fetch** handles making and tracking the status of api calls.
 
-### Entities
-A generic entity store based around the normalizr library that stores entities by their id.
+The specific information each contains includes:
 
-To add/update entities into this store, simply dispatch an action with an 'entities' payload.
-
-```js
-dispatch({
-  type: 'SOME_ACTION',
-  payload: {
-    entities: normalize(response, Todo).entities
-  }
-})
-```
-
-The entities reducer also comes with a few other sub-reducers/features. These include:
- - **Timestamp** For every entity added to the store, a timestamp is added to keep track of when the data was last put into the redux store.
- - **Optimistic** Allows you to optimistically update the entity store and roll back any failed/cancelled updates
- - **Editable** Allows you to have one editable entity at a time
- 
 ### Fetch
-This set of redux actions/reducers/selectors allow you to easily keep track of your api request states.
-
-This module keeps track of the following information:
  - **Failed count** How many times the api has failed without a successful response
  - **Timestamp** When the last successful attempt for a given api was
  - **Slow Connections** If a single request takes too long
  - **Error** The error message of the last failed attempt
-
-## Usage
-All that is required to use this library is redux, although there are some things you can do to make the overall experience nicer 
-
-### 1. Pre-requisites
-**Required**
-- redux
-
-**Optional**
-- normalizr This will make it easy to normalize your data to be accepted into the generic entity store
-- redux-thunk Some of the fetch actions are provided as thunks, though I'm sure you could work around this if you really needed to
-
-### 2. Install the library
-```sh
-npm install alexs-redux-fetch
-```
-
-### 3. Add the reducer to your root reducer
-Import createReducer from the library and add it into your root reducer.
-
-*Look at the createReducer docs for more you can do with this*
-
-```js
-// your root reducer
-import createReducer from 'alexs-redux-fetch';
-
-export default combineReducers({
-  ..., // your other reducers,
-  api: createReducer()
-})
-```
-
-### 4. Set up your selectors (optional, but recommended)
-The entity and fetch selectors are provided seperately, so in whichever file you keep your selectors:
-
-#### Entity Selectors
-
-The easiest way to use the entity selectors is with the createEntitySelectors, which generates selectors for a specific entity.
-
-createEntitySelectors function takes three parameters
-- Entity name - the name of the entity you want to create selectors for. This will also be the name you use with the normalizr library
-- Get state (optional) - A function that returns the sub-state for where you keep this library (defaults to returning the passed in state)
-- Selectors (optional - should be rarely used) - The selectors you want to generate for the entity (will default to the the packages selectors, look at documentation for more information).
-
-#### Fetch Selectors
-
-To use the fetch selectors use createFetchSelectors, which takes one argument to get the state.   
-
-#### Example
-
-```js
-// wherever-you-keep-selectors.js (I normally keep them in same file as their reducer)
-import { createEntitySelector, createFetchSelectors } from 'alexs-redux-fetch';
-
-// your selectors
-
-export const todoSelectors = createEntitySelector('todo', state => state.api);
-export const userSelectors = createEntitySelector('user', state => state.api);
-
-export const fetchSelectors = createFetchSelectors(state => state.api);
-```
-
-### 5. Using the fetch actions
-The way the fetch feature keeps track of your individual api calls is via a unique ref.
-It is recommended that you create ref generator functions to easily produce these refs.
-
-```js
-import { fetchAction } from 'alexs-redux-fetch/fetch/actions';
-
-const fetchTodoApi = id => api(`/todos/${id}`)
-const fetchTodoRef = id => `/TODO/${id}/GET`;
-
-const saveTodoApi = (id, fields) => api.post(`/todos/${id}`, fields)
-const saveTodoRef = id => `/TODO/${id}/SAVE`;
-
-export const fetchTodo = id => fetchAction(
-  fetchTodoRef(id),
-  fetchTodo(id)
-);
-
-export const saveTodo = (id, fields) => fetchAction(
-  saveTodoRef(id),
-  saveTodoApi(id, fields)
-);
-```
-
-### 6. Set up your api code (optional)
-As mentioned in the above section, the entity reducer will use any entities from the action payload.
-
-The fetchAction thunk in this library will add whatever your api/promise resolves with to the action payload.
-So to make your action files a little cleaner, add your normalization code to your api functions.
-
-Note: the fetchAction thunk is expecting your api/promise to resolve with an object with either a response or error ref. This can be added to the api code as well.
-
-Example:
-```js
-// /api/todo.js
-
-import { schema, normalize } from 'normalizr';
-
-const { Entity } = schema;
-
-export const Todo = new Entity('todo');
-
-export const fetchAll = () => api('/todos')
-  .then(response => normalize(response, [Todo]))
-  .then(response => ({ response }))
-  .catch(error => ({ error }));
-  
-// /actions/todo.js
-
-import { fetchAction } from 'alexs-redux-fetch/fetch/actions';
-import * as todoApi from '/api/todo';
-
-export const fetchTodos = () => fetchAction('ALL_TODOS', todoApi.fetchAll())
-```
-
-## Api
-
-### Core
-
-#### createReducer(byIdReducers - optional)
-This will create the reducer for you to add into your root reducer.
-
-The function takes optional sub-reducers that you can provide to co-manage specific entity states for instances where you can't provide the necessary update in a entities action payload.
-
-Your sub-reducer will be called after our one. So if your action also contained entities, the state your reducer will be given will include the updated state.
-
-```js
-import { combineReducers } from 'redux';
-import createReducer from 'alexs-redux-fetch';
-import yourOtherReducer from './somewhere';
-
-const todos = (state, action) => {
-  switch(action.type) {
-    case 'NUKE_ALL_THE_THINGS':
-      return {}
-    default:
-      return state;
-  }
-}
-
-export default combineReducers({
-  yourOtherReducer,
-  api: createReducer({
-    todos
-  })
-})
-
-```
-
-### Entities
-
-#### Actions
-
-##### Editable
-
-###### beginEditing(entityName, fields)
-Assigns the fields to the editable entity
-
-```js
-import { beginEditing } from 'alexs-redux-fetch/entities/actions';
-
-beginEditing('todo', {id: '123', title: 'Do stuff'})
-```
-
-###### beginNew(entityName)
-Sets the editable entity to an empty object
-
-```js
-import { beginNew } from 'alexs-redux-fetch/entities/actions';
-
-beginNew('todo')
-```
-
-###### update
-Merges the fields into the editable entity
-
-```js
-import { update } from 'alexs-redux-fetch/entities/actions';
-
-update('todo', {title: 'Do other stuff'})
-```
-
-###### stopEditing
-Sets the editable entity to null
-
-```js
-import { stopEditing } from 'alexs-redux-fetch/entities/actions';
-
-stopEditing('todo')
-```
-
-###### createEditActions(entityName)
-Wraps all of the editable entity actions with the entityName
-
-```js
-import { createEditActions } from 'alexs-redux-fetch/entities/actions';
-
-const editTodoActions = createEditActions('todo')
-
-editTodoActions.update({completed: false})
-
-```
-
-##### Optimistic Updates
-
-###### optimisticUpdate(ref, entities)
-Creates an optimistic update optimisticUpdate that can be referenced by the provided ref.
-
-```js
-import { schema, normalize } from 'normalizr';
-import { optimisticUpdate } from 'alexs-redux-fetch/entities/actions';
-
-const todo = new schema.Entity('todo');
-
-optimisticUpdate('TODO/1/SAVE', normalize({id: 1, completed: false}, todo).entities)
-```
-
-###### cancelOptimisticUpdate(ref)
-Cancels the optimistic update for the given ref
-
-*Note: This now just calls fetchCancel*
-
-```js
-import { cancelOptimisticUpdate } from 'alexs-redux-fetch/entities/actions';
-
-cancelOptimisticUpdate('TODO/1/SAVE')
-```
-
-#### Selectors
-
-##### getById(state, entityName, id) -> (Entity | undefined)
-Returns the entity for the given type and id.
-
-If the entity has been optimistically updated, the object will have the added information
-```js
-{
-  __optimistic: true
-  __refs: [] // list of refs that have current optimistic updates for the entity
-}
-```
-
-##### getAll(state, entityName) -> []
-Returns all entities currently stored for the given entityName.
-
-Using this function isn't recommended, as it just does an Object.values(), it is probably better to keep a list of ids stored to loop through rather than getting all items*
-
-For now you will need to create these lists of ids.
-
-If the entity has been optimistically updated, the object will have the added information
-```js
-{
-  __optimistic: true
-  __refs: [] // list of refs that have current optimistic updates for the entity
-}
-```
-
-##### getTimestamp(state, entityName, id) -> (timestamp | undefined)
-Returns the timestamp of when the entity was last written into.
-
-*Note: This doesn't take into account your reducers passed into createReducer*
-
-##### getEditable(state, entityName) -> (Entity | undefined)
-Returns the current editable entity.
-
-##### createEntitySelectors(entityName, selectors = entitySelectors) -> {}
-All of the above selectors are in the format (state, entityName, ...params). So to avoid passing in entityName each time, you can use createEntitySelectors to generate entity specific selectors.
-
-You can also pass in your own selectors if you have added onto the provided entity selectors, your custom selectors must be in the format (state, entityName, ...params).
  
-```js
-const todoSelectors = createEntitySelectors('todo')
-
-todoSelectors.getById(state, 123) // getById(state, 'todo', 123)
-```
+### Entities
+ - **Timestamp** For every entity added to the store, a timestamp is added to keep track of when the data was last put into the redux store.
+ - **Optimistic** Allows you to optimistically update the entity store and roll back any failed/cancelled updates
+ - **Editable** Allows you to have one editable entity per entity type at a time
+ 
+## Setting Up
+ 
+## Usage
 
 ### Fetch
 
-#### Actions
+#### Making api calls
+Getting started tracking API calls with this library is rather easy with the built in `fetchAction` thunk action.
 
-##### fetch(Request|Success|Failure|Cancel)(ref, payload = {}, meta = {})
-Although you probably won't need to access these methods as fetchAction should cover most use cases, they are provided anyway.
+This function takes in three parameters
 
-Each generates a single action with the required meta data for the fetch reducers to detect.
+ - **Ref** The unique key for this api call
+ - **Promise** Some promise (usually your fetch call) that resolves with either a `response` or `error` attribute.
+ - **Optimistic** (optional) The optimistic update for this api call (see optimistic docs for more info about this)
+  
+Using it will look something like this
 
-Each action will generally look like this
+```js
+import { fetchAction } from 'alexs-redux-fetch/fetch/actions';
+
+export const fetchTodo = id => fetchAction(
+  `TODO/${id}/GET`,
+  fetch(`/todo/${id}`).then(res => res.json())
+)
 ```
-{
-  type: {ref}_(REQUEST|SUCCESS|FAILURE),
-  payload,
-  meta: {
-    fetch: {
-      type: (REQUEST|SUCCESS|FAILURE)
-      ref
-    }
-  }
-}
-```
 
-Each action will have the following effects
-
-###### All
-    - resets connection stats info (e.g. slow) 
-
-###### Request
-    - status for the given ref will be set to PENDING
-    - timestamp for the given ref will be set to null
-    
-###### Success
-    - status for the given ref will be set to LOADED
-    - timestamp for the given ref will be set
-    - resets failed count back to 0
-    
-###### Failure
-    - status for the given ref will be set to FAILED
-    - increases the failed count by 1
-    
-###### Cancel
-    - status for the given ref will be set to null
-    - resets failed count back to 0    
-    - cancels any optimistic updates for the given ref
-
-##### slowConnection(ref)
-Again, like the individual fetch actions above, you probably won't need to use this, as it is bundled with the connectionStats thunk which is itself called from the fetchAction thunk.
-
-Dispatching this action will list the ref as a slow request.
-
-*Note: This gets reset any time one of the fetch actions is dispatched*
-
-##### connectionStats(ref, promise, config) [thunk]
-At the moment this async action just tracks slow requests, however it may be expanded in the future.
-
-Config takes the options:
- - slowTimeout (default 3 seconds) - how long to wait before dispatching slowConnection
-
-##### fetchAction(ref, promise, optimistic) [thunk]
-This action handles the whole life cycle of an api request.
-
-The steps this actions takes looks like
-1. If optimistic provided, it will dispatch an optimisticUpdate
-2. Dispatch fetchRequest
-3. Dispatch connectionStats
-4.  If promise resolves with an object with an 'error' ref, dispatches fetchFailure
+This thunk action will perform the following:
+1. If optimistic provided, it will dispatch `optimisticUpdate`
+2. Dispatch `fetchRequest`
+3. Dispatch `connectionStats`
+4.  If promise resolves with an object with an 'error' attribute, dispatches `fetchFailure`
     
     OR
     
-    If promise resolves with an object with a 'response' ref, dispatches fetchSuccess
+    If promise resolves with an object with a 'response' attribute, dispatches `fetchSuccess`
 
-#### Selectors
+Keeping it simple, lets consider if we just wanted to keep track of the status of our todo api call (we will ignore optimistic updates and connection stats for now).
 
-##### getStatus(state, ref) -> (NOT_LOADED | LOADED | PENDING | FAILED)
-Returns the status of the api, if no status is in state this function will return NOT_LOADED.
+When we call the `fetchTodo` it will first dispatch the `fetchRequest` action. This will put the ref `TODO/${id}/GET` into a `PENDING` state.
+ 
+We can use the selector `getIsPending` to check if the ref is pending.
 
-##### getIsPending(state, ref) -> Bool
-Returns whether or not a ref is currently pending.
+```js
+import React from 'react';
+import { connect } from 'react-redux';
+import { fetchSelectors, todoSelectors } from './selectors';
 
-##### getIsSlow(state, ref) -> Bool
-Returns whether or not a ref is currently listed as slow.
+const Todo = ({isPending, todo}) => {
+  if (isPending) {
+    return <div>Loading...</div>;
+  }
+  
+  return <div>{todo.title}</div>;
+};
 
-##### getFailedAttempts(state, ref) -> Int
-Returns the amount of failed attempts for the given ref
+export default connect(
+  (state, ownProps) => ({
+    todo: todoSelectors.getById(state, ownProps.todoId),
+    isPending: fetchSelectors.getIsPending(state, `TODO/${ownProps.todoId}/GET`)
+  })
+)(Todo);
+```
 
-##### getTimestamp(state, ref) -> timestamp
-Returns the timestamp of the last successful api request for the given ref.
+When the api resolves, if it resolved with a `response` attribute, a `fetchSuccess` action will be dispatched, otherwise a `fetchFailure` action is dispatched.
 
-##### getErrorMessage(state, ref) -> Any (Whatever you set as the error message)
-Returns the error message for the give ref.
+When a `fetchSuccess` action is dispatched, the ref will be marked as `SUCCESS`.
+When a `fetchFailure` action is dispatched, the ref will be marked as `FAILED`.
 
+Although it can be useful to know when an api call is successful, keep in mind that a single piece of data can be loaded in via a range of api calls, so it may be best to not conditionally display data based on this.
 
-#### Helpers
+We can use a few other selectors to now display an error state as well.
 
-##### fetchType(ref) -> String
-Returns the action type used for when an api with the provided ref has been called.
+```js
+import React from 'react';
+import { connect } from 'react-redux';
+import { fetchSelectors, todoSelectors } from './selectors';
 
-##### successType(ref) -> String
-Returns the action type used for when an api with the provided ref is successful.
+const Todo = ({isPending, hasFailed, error, todo}) => {
+  if (isPending) {
+    return <div>Loading...</div>;
+  }
+  
+  if (hasFailed) {
+    return <div>Error: {error}</div>;
+  }
+  
+  return <div>{todo.title}</div>;
+};
 
-##### failedType(ref) -> String
-Returns the action type used for when an api with the provided ref has failed.
-
-##### cancelType(ref) -> String
-Returns the action type used for when an api with the provided ref is cancelled.
+export default connect(
+  (state, ownProps) => ({
+    todo: todoSelectors.getById(state, ownProps.todoId),
+    isPending: fetchSelectors.getIsPending(state, `TODO/${ownProps.todoId}/GET`),
+    hasFailed: fetchSelectors.getHasFailed(state, `TODO/${ownProps.todoId}/GET`),
+    error: fetchSelectors.getErrorMessage(state, `TODO/${ownProps.todoId}/GET`)
+  })
+)(Todo);
+```
