@@ -17,7 +17,6 @@ An example project using this library can be found here: [Redux Fetch Example](h
   - [4. Set up your selectors (optional, but recommended)](#4-set-up-your-selectors-optional-but-recommended)
     - [Entity Selectors](#entity-selectors)
     - [Fetch Selectors](#fetch-selectors)
-    - [Example](#example)
   - [5. Using the fetch actions](#5-using-the-fetch-actions)
   - [6. Set up your api code (optional)](#6-set-up-your-api-code-optional)
 - [Usage](#usage)
