@@ -3,6 +3,9 @@ A set of redux actions/selectors/reducers to handle making api calls that fetch 
 
 An example project using this library can be found here: [Redux Fetch Example](https://github.com/AlexRobinson-/redux-fetch-example)
 
+Note: This is still in development, breaking changes will continue until I bump it up to V2.
+Once this project reaches V2 it will start following semantic versioning.
+
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
