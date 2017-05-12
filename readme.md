@@ -169,7 +169,7 @@ const saveTodoRef = id => `/TODO/${id}/SAVE`;
 
 export const fetchTodo = id => fetchAction(
   fetchTodoRef(id),
-  fetchTodo(id)
+  fetchTodoApi(id)
 );
 
 export const saveTodo = (id, fields) => fetchAction(
