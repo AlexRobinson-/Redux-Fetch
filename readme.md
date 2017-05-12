@@ -21,7 +21,7 @@ The specific information each contains includes:
  - **Optimistic** Allows you to optimistically update the entity store and roll back any failed/cancelled updates
  - **Editable** Allows you to have one editable entity per entity type at a time
 
-## Usage
+## Setting Up
 All that is required to use this library is redux, although there are some things you can do to make the overall experience nicer 
 
 ### 1. Pre-requisites
