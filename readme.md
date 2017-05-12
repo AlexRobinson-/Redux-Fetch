@@ -728,6 +728,119 @@ const todoSelectors = createEntitySelectors('todo')
 todoSelectors.getById(state, 123) // getById(state, 'todo', 123)
 ```
 
+#### Helpers
+
+##### hasEntities (action) -> Bool
+Returns true if the given action contains entities.
+
+```js
+import { hasEntities } from 'alexs-redux-fetch/entities/helpers';
+
+const action = {
+  type: 'SOME_ACTION',
+  payload: {
+    entities: {
+      todo: {
+        1: {
+          id: 1,
+          title: 'Do something'
+        }
+      }
+    }
+  }
+}
+
+hasEntities(action); // true
+hasEntities({type: 'cat'}); // false
+```
+
+##### getAllEntities (action) -> {}
+Returns all of the entities in the given action. If no entities in action it will return an empty object.
+
+```js
+import { getAllEntities } from 'alexs-redux-fetch/entities/helpers';
+
+const action = {
+  type: 'SOME_ACTION',
+  payload: {
+    entities: {
+      todo: {
+        1: {
+          id: 1,
+          title: 'Do something'
+        }
+      },
+      user: {
+        1: {
+          id: 1,
+          name: 'Someone'
+        }
+      }
+    }
+  }
+}
+
+getAllEntities(action); // { todo: { ... }, user: { ... } }
+getAllEntities({type: 'cat'}); // {}
+```
+
+##### getEntities (action, entityName) -> {}
+Returns the entities for the entityName from the given action. If no entities of that type exist in the action it will return an empty object.
+
+```js
+import { getEntities } from 'alexs-redux-fetch/entities/helpers';
+
+const action = {
+  type: 'SOME_ACTION',
+  payload: {
+    entities: {
+      todo: {
+        1: {
+          id: 1,
+          title: 'Do something'
+        }
+      },
+      user: {
+        1: {
+          id: 1,
+          name: 'Someone'
+        }
+      }
+    }
+  }
+}
+
+getEntities(action, 'todo'); // { 1: { ... } }
+getEntities(action, 'cat'); // {}
+```
+
+##### updateEntity (state, id, (entity) -> updatedEntity) -> {}
+A simple utility function to assist in the sub-reducers you create to handle custom actions for the entity store (see `createReducer` docs).
+
+```js
+import { updateEntity } from 'alexs-redux-fetch/entities/helpers';
+
+const todoState = {
+  1: {
+    id: 1,
+    title: 'Do something',
+    completed: false
+  }
+}
+
+const newState = updateEntity(todoState, 1, entity => ({ ...entity, completed: true}))
+
+/*
+newState = {
+  1: {
+    id: 1,
+    title: 'Do something',
+    completed: true
+  }
+}
+*/
+```
+
 ### Fetch
 
 #### Actions
