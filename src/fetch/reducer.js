@@ -111,11 +111,11 @@ const getTimestamp = (state, ref) => state.timestamp[ref];
 
 export const selectors = {
   getIsPending,
-  getIsFailing,
-  getIsSlow,
-  getFailedAttempts,
   getHasFailed,
+  getIsFailing,
+  getFailedAttempts,
   getStatus,
+  getIsSlow,
   getErrorMessage,
   getTimestamp
 }

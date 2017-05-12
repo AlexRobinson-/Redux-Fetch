@@ -47,7 +47,7 @@ export const fetchTodo = id => fetchAction(
 )
 ```
 
-This thunk action will perform the following:
+This thunk action will perform the following steps:
 1. If optimistic provided, it will dispatch `optimisticUpdate`
 2. Dispatch `fetchRequest`
 3. Dispatch `connectionStats`
@@ -59,9 +59,9 @@ This thunk action will perform the following:
 
 Keeping it simple, lets consider if we just wanted to keep track of the status of our todo api call (we will ignore optimistic updates and connection stats for now).
 
-When we call the `fetchTodo` it will first dispatch the `fetchRequest` action. This will put the ref `TODO/${id}/GET` into a `PENDING` state.
+When we call our `fetchTodo` action creator it will first dispatch the `fetchRequest` action. This will put the ref `TODO/${id}/GET` into a `PENDING` state.
  
-We can use the selector `getIsPending` to check if the ref is pending.
+We can use the selector `getIsPending` to check this.
 
 ```js
 import React from 'react';
@@ -107,6 +107,7 @@ const Todo = ({isPending, hasFailed, error, todo}) => {
     return <div>Error: {error}</div>;
   }
   
+  // assume it exists
   return <div>{todo.title}</div>;
 };
 
@@ -133,7 +134,7 @@ If for example, our ref was 'FETCH_ALL_THE_THINGS', the following action types t
 - FETCH_ALL_THE_THINGS_FAILURE
 - FETCH_ALL_THE_THINGS_CANCEL
 
-However, with any library this may change some time in the future, so instead of hard coding the strings yourself, functions are provided by this library to create the aciton type.
+However, with any library this may change in the future, so instead of hard coding the strings yourself, functions are provided by this library to create the action type.
 
 These functions are:
  - successType
@@ -277,5 +278,94 @@ dispatch({
 ```
 
 #### Optimistic updates
+To perform an optimistic update, the action creator `optimisticUpdate` has been provided.
+
+This function takes two parameters,
+ 1. The ref the optimistic update is for
+ 2. The normalized entities that you expect to receive for the given ref
+ 
+The way optimistic updates are used within the library are, after you have performed an optimistic update, when you use a selector to get an entity or entities from the store.
+The provided selectors will check to see if there are any optimistic updates for the entity. If there are, the updates will be merged into the entity and the following properties added to the entity object:
+
+- **__refs** An array of all the refs that have an optimistic update for the entity
+- **__optimistic** This will be set to true, used as a way to identify if an entity has optimistic attributes
+
+In practice this could be used like so
+```js
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { optimisticUpdate } from 'alexs-redux-fetch';
+import { todoSelectors } from './selectors';
+
+class Todos extends Component {
+  
+  componentWillMount() {
+    this.props.dispatch({
+      type: 'ADD_TODOS',
+      payload: {
+        entities: {
+          todo: {
+            1: {
+              id: 1,
+              title: 'Do stuff',
+              completed: true
+            }
+          }
+        }
+      }
+    });
+    
+    this.props.dispatch(optimisticUpdate(
+        'TODO/1/UPDATE', {
+          todo: { 
+            1: {
+              completed: false
+            }
+          }
+        }
+    ));
+  }
+    
+  render() {
+    return (
+      <div>
+        <h2>Todos</h2>
+        {
+          this.props.todos(todo => (
+            <div>
+              <span>{todo.title}</span>
+              <span>{todo.completed ? 'Completed' : 'Todo'}</span>
+              {
+                todo.__optimistic && todo.__refs.includes('TODO/1/UPDATE') && (
+                  <span>Saving...</span>
+                )
+              }
+            </div>
+          ))
+        }
+      </div>
+    );
+  }
+}
+
+export default connect(
+  state => ({
+    todos: todoSelectors.getAll(state)
+  })
+)(Todos)
+```
+
+To cancel an optimistic update, simply dispatch `fetchCancel` which will remove it from the store.
+
+```js
+import { fetchCancel } from 'alexs-redux-fetch/fetch';
+
+dispatch(
+  fetchCancel('TODO/1/UPDATE')
+);
+```
+Also note, since an optimistic update is tied to a specific ref, only one optimistic update can be created per ref. If a second optimistic update is dispatched, the first one will be overwritten.
+
+
 #### Editing entities
 #### Fresh data
