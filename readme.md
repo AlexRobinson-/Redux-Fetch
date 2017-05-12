@@ -143,7 +143,7 @@ createEntitySelectors function takes three parameters
 
 To use the fetch selectors use createFetchSelectors, which takes one argument to get the state.   
 
-#### Example
+Example
 
 ```js
 // wherever-you-keep-selectors.js (I normally keep them in same file as their reducer)
