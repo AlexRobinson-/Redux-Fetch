@@ -52,12 +52,10 @@ A set of redux actions/selectors/reducers to handle making api calls that fetch 
       - [updateEntity (state, id, (entity) -> updatedEntity) -> {}](#updateentity-state-id-entity---updatedentity---)
   - [Fetch](#fetch-2)
     - [Actions](#actions-1)
-      - [fetch(Request|Success|Failure|Cancel)(ref, payload = {}, meta = {})](#fetchrequestsuccessfailurecancelref-payload---meta--)
-        - [All](#all)
-        - [Request](#request)
-        - [Success](#success)
-        - [Failure](#failure)
-        - [Cancel](#cancel)
+      - [fetchRequest(ref, payload = {}, meta = {})](#fetchrequestref-payload---meta--)
+      - [fetchSuccess(ref, payload = {}, meta = {})](#fetchsuccessref-payload---meta--)
+      - [fetchFailure(ref, payload = {}, meta = {})](#fetchfailureref-payload---meta--)
+      - [fetchCancel(ref, payload = {}, meta = {})](#fetchcancelref-payload---meta--)
       - [slowConnection(ref)](#slowconnectionref)
       - [connectionStats(ref, promise, config) [thunk]](#connectionstatsref-promise-config-thunk)
       - [fetchAction(ref, promise, optimistic) [thunk]](#fetchactionref-promise-optimistic-thunk)
@@ -848,44 +846,32 @@ newState = {
 
 #### Actions
 
-##### fetch(Request|Success|Failure|Cancel)(ref, payload = {}, meta = {})
-Although you probably won't need to access these methods as fetchAction should cover most use cases, they are provided anyway.
+##### fetchRequest(ref, payload = {}, meta = {})
+Returns a fetch request action, which will make the following changes in the store:
 
-Each generates a single action with the required meta data for the fetch reducers to detect.
-
-Each action will generally look like this
-```
-{
-  type: {ref}_(REQUEST|SUCCESS|FAILURE),
-  payload,
-  meta: {
-    fetch: {
-      type: (REQUEST|SUCCESS|FAILURE)
-      ref
-    }
-  }
-}
-```
-
-Each action will have the following effects
-
-###### All
-    - resets connection stats info (e.g. slow) 
-
-###### Request
+    - resets connection stats info (e.g. slow)
     - status for the given ref will be set to PENDING
     - timestamp for the given ref will be set to null
     
-###### Success
+##### fetchSuccess(ref, payload = {}, meta = {})
+Returns a fetch success action, which will make the following changes in the store:
+
+    - resets connection stats info (e.g. slow)
     - status for the given ref will be set to LOADED
     - timestamp for the given ref will be set
     - resets failed count back to 0
     
-###### Failure
-    - status for the given ref will be set to FAILED
-    - increases the failed count by 1
-    
-###### Cancel
+##### fetchFailure(ref, payload = {}, meta = {})
+Returns a fetch failure action, which will make the following changes in the store:
+
+     - resets connection stats info (e.g. slow)
+     - status for the given ref will be set to FAILED
+     - increases the failed count by 1
+     
+##### fetchCancel(ref, payload = {}, meta = {})
+Returns a fetch failure action, which will make the following changes in the store:
+
+    - resets connection stats info (e.g. slow)
     - status for the given ref will be set to null
     - resets failed count back to 0    
     - cancels any optimistic updates for the given ref
