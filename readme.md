@@ -71,9 +71,9 @@ Once this project reaches V2 it will start following semantic versioning.
       - [getTimestamp(state, ref) -> timestamp](#gettimestampstate-ref---timestamp)
       - [getErrorMessage(state, ref) -> Any (Whatever you set as the error message)](#geterrormessagestate-ref---any-whatever-you-set-as-the-error-message)
     - [Helpers](#helpers-1)
-      - [fetchType(ref) -> String](#fetchtyperef---string)
+      - [requestType(ref) -> String](#requesttyperef---string)
       - [successType(ref) -> String](#successtyperef---string)
-      - [failedType(ref) -> String](#failedtyperef---string)
+      - [failureType(ref) -> String](#failuretyperef---string)
       - [cancelType(ref) -> String](#canceltyperef---string)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
