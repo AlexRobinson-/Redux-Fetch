@@ -313,7 +313,7 @@ To perform an optimistic update, the action creator `optimisticUpdate` has been 
 
 This function takes two parameters,
  1. The ref the optimistic update is for
- 2. The normalized entities that you expect to receive for the given ref
+ 2. The normalized entities that you expect to receive for the given ref is successful
  
 The way optimistic updates are used within the library are, after you have performed an optimistic update, when you use a selector to get an entity or entities from the store.
 The provided selectors will check to see if there are any optimistic updates for the entity. If there are, the updates will be merged into the entity and the following properties added to the entity object:

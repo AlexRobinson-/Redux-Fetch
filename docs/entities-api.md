@@ -43,7 +43,7 @@ import { beginEditing } from 'alexs-redux-fetch/entities/actions';
 beginEditing('todo', {id: '123', title: 'Do stuff'})
 ```
 
-#### update
+#### update(entityName, fields)
 Merges the fields into the editable entity
 
 ```js
@@ -52,7 +52,7 @@ import { update } from 'alexs-redux-fetch/entities/actions';
 update('todo', {title: 'Do other stuff'})
 ```
 
-#### stopEditing
+#### stopEditing(entityName)
 Sets the editable entity to null
 
 ```js
