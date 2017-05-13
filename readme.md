@@ -66,7 +66,7 @@ export default combineReducers({
 })
 ```
 
-### 5. Using the fetch actions
+### 4. Using the fetch actions
 If you are using redux thunk, the [fetchAction](docs/fetch-api.md#fetchactionref-promise-optimistic-thunk) is a quick way to get started.
 This action will handle dispatching all of the necessary functions for you to:
  - Keep track of your api's status (pending, success, failed)
