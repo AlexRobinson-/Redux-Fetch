@@ -22,7 +22,7 @@ The general idea behind them is:
 - **Fetch** handles making and tracking the status of api calls.
 - **Entities** handles storing, editing and optimistically updating pieces of data
 
-The specific information each contains includes:
+The specific information each has includes:
 
 ### Fetch
  - **Failed count** How many times the api has failed without a successful response
