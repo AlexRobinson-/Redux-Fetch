@@ -1,4 +1,16 @@
-# Usage
+# Examples
+
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [Making api calls](#making-api-calls)
+- [Making api calls your own way](#making-api-calls-your-own-way)
+- [Listening in to fetch actions in your own reducers](#listening-in-to-fetch-actions-in-your-own-reducers)
+- [Adding and updating entities](#adding-and-updating-entities)
+- [Optimistic updates](#optimistic-updates)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ## Making api calls
 Getting started tracking API calls with this library is rather easy with the built in `fetchAction` thunk action.

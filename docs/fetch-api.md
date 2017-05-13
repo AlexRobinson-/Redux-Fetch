@@ -1,5 +1,32 @@
 # Fetch
 
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [Actions](#actions)
+  - [fetchRequest(ref, payload = {}, meta = {})](#fetchrequestref-payload---meta--)
+  - [fetchSuccess(ref, payload = {}, meta = {})](#fetchsuccessref-payload---meta--)
+  - [fetchFailure(ref, payload = {}, meta = {})](#fetchfailureref-payload---meta--)
+  - [fetchCancel(ref, payload = {}, meta = {})](#fetchcancelref-payload---meta--)
+  - [slowConnection(ref)](#slowconnectionref)
+  - [connectionStats(ref, promise, config) [thunk]](#connectionstatsref-promise-config-thunk)
+  - [fetchAction(ref, promise, optimistic) [thunk]](#fetchactionref-promise-optimistic-thunk)
+- [Selectors](#selectors)
+  - [getStatus(state, ref) -> (NOT_LOADED | LOADED | PENDING | FAILED)](#getstatusstate-ref---not_loaded--loaded--pending--failed)
+  - [getIsPending(state, ref) -> Bool](#getispendingstate-ref---bool)
+  - [getIsSlow(state, ref) -> Bool](#getisslowstate-ref---bool)
+  - [getFailedAttempts(state, ref) -> Int](#getfailedattemptsstate-ref---int)
+  - [getTimestamp(state, ref) -> timestamp](#gettimestampstate-ref---timestamp)
+  - [getErrorMessage(state, ref) -> Any (Whatever you set as the error message)](#geterrormessagestate-ref---any-whatever-you-set-as-the-error-message)
+- [Helpers](#helpers)
+  - [requestType(ref) -> String](#requesttyperef---string)
+  - [successType(ref) -> String](#successtyperef---string)
+  - [failureType(ref) -> String](#failuretyperef---string)
+  - [cancelType(ref) -> String](#canceltyperef---string)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 ## Actions
 
 ### fetchRequest(ref, payload = {}, meta = {})

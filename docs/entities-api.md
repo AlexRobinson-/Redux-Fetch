@@ -1,5 +1,33 @@
 # Entities Api
 
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [Actions](#actions)
+  - [Editable](#editable)
+    - [beginEditing(entityName, fields)](#begineditingentityname-fields)
+    - [update](#update)
+    - [stopEditing](#stopediting)
+    - [createEditActions(entityName)](#createeditactionsentityname)
+  - [Optimistic Updates](#optimistic-updates)
+    - [optimisticUpdate(ref, entities)](#optimisticupdateref-entities)
+- [Selectors](#selectors)
+  - [getById(state, entityName, id, withOptimistic = true) -> (Entity | undefined)](#getbyidstate-entityname-id-withoptimistic--true---entity--undefined)
+  - [getAll(state, entityName, withOptimistic = true) -> []](#getallstate-entityname-withoptimistic--true---)
+  - [getItemUpdateForRef(state, entityName, id, ref) -> {}](#getitemupdateforrefstate-entityname-id-ref---)
+  - [getItemUpdates(state, entityName, id) -> {}](#getitemupdatesstate-entityname-id---)
+  - [getTimestamp(state, entityName, id) -> (timestamp | undefined)](#gettimestampstate-entityname-id---timestamp--undefined)
+  - [getEditable(state, entityName) -> (Entity | undefined)](#geteditablestate-entityname---entity--undefined)
+  - [createEntitySelectors(entityName, selectors = entitySelectors) -> {}](#createentityselectorsentityname-selectors--entityselectors---)
+- [Helpers](#helpers)
+  - [hasEntities (action) -> Bool](#hasentities-action---bool)
+  - [getAllEntities (action) -> {}](#getallentities-action---)
+  - [getEntities (action, entityName) -> {}](#getentities-action-entityname---)
+  - [updateEntity (state, id, (entity) -> updatedEntity) -> {}](#updateentity-state-id-entity---updatedentity---)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 ## Actions
 
 ### Editable

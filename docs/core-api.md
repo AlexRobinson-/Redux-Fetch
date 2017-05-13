@@ -1,5 +1,13 @@
 # Core Api
 
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [createReducer(byIdReducers = entitySelectors)](#createreducerbyidreducers--entityselectors)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 ## createReducer(byIdReducers = entitySelectors)
 This will create the reducer for you to add into your root reducer.
 
