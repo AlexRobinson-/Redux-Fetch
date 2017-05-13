@@ -54,7 +54,7 @@ npm install alexs-redux-fetch
 ### 3. Add the reducer to your root reducer
 Import createReducer from the library and add it into your root reducer.
 
-*Look at the createReducer docs in the [core api]() for more you can do with this*
+*Look at the createReducer docs in the [core api](docs/core-api.md#createReducer) for more you can do with this*
 
 ```js
 // your root reducer
