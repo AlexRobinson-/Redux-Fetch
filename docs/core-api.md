@@ -14,7 +14,7 @@ This will create the reducer for you to add into your root reducer.
 Sometimes you need to modify an entity, but not through passing the normalized entities attribute in an action's payload.
 To get around this, the `createReducer` function allows you to pass sub-reducers to handle specific entity types.
 
-Now when the entity reducer runs, it will first try and merge in any new entities and then it will call each if your sub-reducers with their part of the entity state.
+Now when the entity reducer runs, it will first try and merge in any new entities and then it will call each of your sub-reducers with their part of the entity state.
 
 This functionality is only available to modify the entity store (dictionary of entities), so other parts of the library will need to be modified through the provided actions.
 

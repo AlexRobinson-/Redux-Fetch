@@ -1,7 +1,11 @@
 # Redux Fetch
-A set of redux actions/selectors/reducers that handles:
- - tracking api calls
- - managing your normalized data.
+A set of redux actions/selectors/reducers that helps you with all things api.
+
+This includes:
+- Keeping track of the state of your api calls (pending, success, failed)
+- Storing your data in a generic normalized store
+- Performing optimistic updates on your data
+- Doing local edits on data before persisting to the server
  
 ## Docs
  - [Getting Started](#getting-started)
@@ -16,7 +20,7 @@ Note: This is still in development, breaking changes will continue until I bump 
 Once this project reaches V2 it will start following semantic versions.
 
 ## Overview
-This library comes with two main features: 'Fetch' and 'Entities'.
+This library comes with two separate, but related features: 'Fetch' and 'Entities'.
 
 The general idea behind them is:
 - **Fetch** handles making and tracking the status of api calls.
@@ -53,7 +57,7 @@ npm install alexs-redux-fetch
 ```
 
 ### 3. Add the reducer to your root reducer
-Import createReducer from the library and add it into your root reducer.
+Import `createReducer` from the library and add it into your root reducer.
 
 *Look at the createReducer docs in the [core api](docs/core-api.md#createreducerbyidreducers--entityselectors) for more you can do with this*
 
@@ -123,6 +127,8 @@ export const removeTodo = id => async dispatch => {
 
 ### 5. Add some entities
 The concept of entities in this library is based on the [normalizr](https://github.com/paularmstrong/normalizr) library (it is even encouraged to use it), all entities are stored by their entity type and then their their id.
+
+Please note though, this library does not offer any way to store lists of ids as is normal for the normalized pattern, this is up to you to implement for now.
 
 To add entities into the store, dispatch any action with the payload `entities`, where entities is the normalized data.
 
