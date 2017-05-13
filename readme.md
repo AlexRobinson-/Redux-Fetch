@@ -54,7 +54,7 @@ npm install alexs-redux-fetch
 ### 3. Add the reducer to your root reducer
 Import createReducer from the library and add it into your root reducer.
 
-*Look at the createReducer docs in the [core api](docs/core-api.md) for more you can do with this*
+*Look at the createReducer docs in the [core api](docs/core-api.md#createreducerbyidreducers--entityselectors) for more you can do with this*
 
 ```js
 // your root reducer
@@ -73,7 +73,7 @@ This action will handle dispatching all of the necessary functions for you to:
  - Check if your api is taking a long time
  - Performing an optimistic update
  
-However, if you would prefer to handle all of this yourself [(which is totally fine)](docs/examples.md##making-api-calls-your-own-way) there are non-thunk actions provided as well.
+However, if you would prefer to handle all of this yourself [(which is totally fine)](docs/examples.md#making-api-calls-your-own-way) there are non-thunk actions provided as well.
 
 The way the fetch feature keeps track of your individual api calls is via a unique ref.
 It is recommended that you create ref generator functions to easily produce these refs.
