@@ -5,32 +5,32 @@
 ### fetchRequest(ref, payload = {}, meta = {})
 Returns a fetch request action, which will make the following changes in the store:
 
-    - resets connection stats info (e.g. slow)
-    - status for the given ref will be set to PENDING
-    - timestamp for the given ref will be set to null
+  - resets connection stats info (e.g. slow)
+  - status for the given ref will be set to PENDING
+  - timestamp for the given ref will be set to null
     
 ### fetchSuccess(ref, payload = {}, meta = {})
 Returns a fetch success action, which will make the following changes in the store:
 
-    - resets connection stats info (e.g. slow)
-    - status for the given ref will be set to LOADED
-    - timestamp for the given ref will be set
-    - resets failed count back to 0
+  - resets connection stats info (e.g. slow)
+  - status for the given ref will be set to LOADED
+  - timestamp for the given ref will be set
+  - resets failed count back to 0
     
 ### fetchFailure(ref, payload = {}, meta = {})
 Returns a fetch failure action, which will make the following changes in the store:
 
-     - resets connection stats info (e.g. slow)
-     - status for the given ref will be set to FAILED
-     - increases the failed count by 1
+   - resets connection stats info (e.g. slow)
+   - status for the given ref will be set to FAILED
+   - increases the failed count by 1
      
 ### fetchCancel(ref, payload = {}, meta = {})
 Returns a fetch failure action, which will make the following changes in the store:
 
-    - resets connection stats info (e.g. slow)
-    - status for the given ref will be set to null
-    - resets failed count back to 0    
-    - cancels any optimistic updates for the given ref
+  - resets connection stats info (e.g. slow)
+  - status for the given ref will be set to null
+  - resets failed count back to 0    
+  - cancels any optimistic updates for the given ref
 
 ### slowConnection(ref)
 Again, like the individual fetch actions above, you probably won't need to use this, as it is bundled with the connectionStats thunk which is itself called from the fetchAction thunk.
