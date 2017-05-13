@@ -5,10 +5,10 @@ A set of redux actions/selectors/reducers that handles:
  
 ## Docs
  - [Getting Started](#getting-started)
- - [Core Api](https://github.com/AlexRobinson-/Redux-Fetch/blob/master/docs/core-api.md)
- - [Fetch Api](https://github.com/AlexRobinson-/Redux-Fetch/blob/master/docs/fetch-api.md)
- - [Entities Api](https://github.com/AlexRobinson-/Redux-Fetch/blob/master/docs/entities-api.md)
- - [Examples](https://github.com/AlexRobinson-/Redux-Fetch/blob/master/docs/examples.md)
+ - [Core Api](docs/core-api.md)
+ - [Fetch Api](docs/fetch-api.md)
+ - [Entities Api](docs/entities-api.md)
+ - [Examples](docs/examples.md)
 
 An example project using this library can be found here: [Redux Fetch Example](https://github.com/AlexRobinson-/redux-fetch-example)
 
