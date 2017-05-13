@@ -13,7 +13,7 @@ A set of redux actions/selectors/reducers that handles:
 An example project using this library can be found here: [Redux Fetch Example](https://github.com/AlexRobinson-/redux-fetch-example)
 
 Note: This is still in development, breaking changes will continue until I bump it up to V2.
-Once this project reaches V2 it will start following semantic versioning.
+Once this project reaches V2 it will start following semantic versions.
 
 ## Overview
 This library comes with two main features: 'Fetch' and 'Entities'.
@@ -54,7 +54,7 @@ npm install alexs-redux-fetch
 ### 3. Add the reducer to your root reducer
 Import createReducer from the library and add it into your root reducer.
 
-*Look at the createReducer docs in the [core api](docs/core-api.md#createReducer) for more you can do with this*
+*Look at the createReducer docs in the [core api](docs/core-api.md) for more you can do with this*
 
 ```js
 // your root reducer
@@ -67,13 +67,13 @@ export default combineReducers({
 ```
 
 ### 5. Using the fetch actions
-If you are using redux thunk, the [fetchAction]() is a quick way to get started.
+If you are using redux thunk, the [fetchAction](docs/fetch-api.md#fetchactionref-promise-optimistic-thunk) is a quick way to get started.
 This action will handle dispatching all of the necessary functions for you to:
  - Keep track of your api's status (pending, success, failed)
  - Check if your api is taking a long time
  - Performing an optimistic update
  
-However, if you would prefer to handle all of this yourself [(which is totally fine)]() there are non-thunk actions provided as well.
+However, if you would prefer to handle all of this yourself [(which is totally fine)](docs/examples.md##making-api-calls-your-own-way) there are non-thunk actions provided as well.
 
 The way the fetch feature keeps track of your individual api calls is via a unique ref.
 It is recommended that you create ref generator functions to easily produce these refs.
@@ -121,7 +121,7 @@ export const removeTodo = id => async dispatch => {
 ```
 
 ### 5. Add some entities
-The concept of entities in this library is based on the [normalizr]() library (it is even encouraged to use it), all entities are stored by their entity type and then their their id.
+The concept of entities in this library is based on the [normalizr](https://github.com/paularmstrong/normalizr) library (it is even encouraged to use it), all entities are stored by their entity type and then their their id.
 
 To add entities into the store, dispatch any action with the payload `entities`, where entities is the normalized data.
 
