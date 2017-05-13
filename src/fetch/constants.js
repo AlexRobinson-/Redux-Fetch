@@ -6,6 +6,7 @@ export const FAILED = 'FAILED'
 /* Actions */
 export const SLOW_CONNECTION = 'SLOW_CONNECTION'
 
+/* Fetch action types */
 export const REQUEST = 'REQUEST';
 export const SUCCESS = 'SUCCESS';
 export const FAILURE = 'FAILURE';
@@ -17,7 +18,3 @@ export const FETCH_ACTION_TYPES = {
   FAILURE,
   CANCEL
 }
-
-export const FETCH_REQUEST = 'FETCH_REQUEST'
-export const FETCH_SUCCESS = 'FETCH_SUCCESS'
-export const FETCH_FAILURE = 'FETCH_FAILURE'

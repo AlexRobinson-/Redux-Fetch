@@ -929,14 +929,38 @@ Returns the error message for the give ref.
 
 #### Helpers
 
-##### fetchType(ref) -> String
+##### requestType(ref) -> String
 Returns the action type used for when an api with the provided ref has been called.
+
+```js
+import { requestType } from 'alexs-redux-fetch/fetch/helpers';
+
+requestType('GET_TODOS'); // GET_TODOS_REQUEST
+```
 
 ##### successType(ref) -> String
 Returns the action type used for when an api with the provided ref is successful.
 
-##### failedType(ref) -> String
+```js
+import { successType } from 'alexs-redux-fetch/fetch/helpers';
+
+successType('GET_TODOS'); // GET_TODOS_SUCCESS
+```
+
+##### failureType(ref) -> String
 Returns the action type used for when an api with the provided ref has failed.
+
+```js
+import { failureType } from 'alexs-redux-fetch/fetch/helpers';
+
+failureType('GET_TODOS'); // GET_TODOS_FAILURE
+```
 
 ##### cancelType(ref) -> String
 Returns the action type used for when an api with the provided ref is cancelled.
+
+```js
+import { cancelType } from 'alexs-redux-fetch/fetch/helpers';
+
+cancelType('GET_TODOS'); // GET_TODOS_CANCEL
+```

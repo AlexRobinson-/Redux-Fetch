@@ -10,16 +10,16 @@ import { optimisticUpdate } from './../entities/actions';
 
 export const slowConnection = ref => action(SLOW_CONNECTION, { ref })
 
-const _fetchAction = (payload = {}, meta = {}, ref, status) => action(
+const createFetchAction = (payload = {}, meta = {}, ref, status) => action(
   `${ref}_${status}`,
   payload,
   { ...meta, fetch: { ref, type: status } }
 )
 
-export const fetchRequest = (ref, payload, meta) => _fetchAction(payload, meta, ref, REQUEST)
-export const fetchSuccess = (ref, payload, meta) => _fetchAction(payload, meta, ref, SUCCESS)
-export const fetchFailure = (ref, payload, meta) => _fetchAction(payload, meta, ref, FAILURE)
-export const fetchCancel = (ref, payload, meta) => _fetchAction(payload, meta, ref, CANCEL)
+export const fetchRequest = (ref, payload, meta) => createFetchAction(payload, meta, ref, REQUEST)
+export const fetchSuccess = (ref, payload, meta) => createFetchAction(payload, meta, ref, SUCCESS)
+export const fetchFailure = (ref, payload, meta) => createFetchAction(payload, meta, ref, FAILURE)
+export const fetchCancel = (ref, payload, meta) => createFetchAction(payload, meta, ref, CANCEL)
 
 const slowConnectionTimer = timeout => new Promise(res => {
   setTimeout(() => res({ slow: true }), timeout)
