@@ -1,5 +1,5 @@
 # Redux Fetch
-A set of redux actions/selectors/reducers to handle making api calls that fetch data and then storing that data.
+A set of redux actions/selectors/reducers to handle tracking api calls and normalized data.
 
 An example project using this library can be found here: [Redux Fetch Example](https://github.com/AlexRobinson-/redux-fetch-example)
 
