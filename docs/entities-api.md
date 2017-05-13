@@ -62,10 +62,11 @@ optimisticUpdate('TODO/1/SAVE', normalize({id: 1, completed: false}, todo).entit
 
 ## Selectors
 
-### getById(state, entityName, id) -> (Entity | undefined)
+### getById(state, entityName, id, withOptimistic = true) -> (Entity | undefined)
 Returns the entity for the given type and id.
 
-If the entity has been optimistically updated, the object will have the added information
+If withOptimistic is true, if the entity has been optimistically updated, the entity will be merged with the updates and have the added information:
+
 ```js
 {
   __optimistic: true
@@ -73,19 +74,115 @@ If the entity has been optimistically updated, the object will have the added in
 }
 ```
 
-### getAll(state, entityName) -> []
+### getAll(state, entityName, withOptimistic = true) -> []
 Returns all entities currently stored for the given entityName.
 
 Using this function isn't recommended, as it just does an Object.values(), it is probably better to keep a list of ids stored to loop through rather than getting all items*
 
 For now you will need to create these lists of ids.
 
-If the entity has been optimistically updated, the object will have the added information
+If withOptimistic is true, if the entity has been optimistically updated, the entity will be merged with the updates and have the added information:
 ```js
 {
   __optimistic: true
   __refs: [] // list of refs that have current optimistic updates for the entity
 }
+```
+
+### getItemUpdateForRef(state, entityName, id, ref) -> {}
+Returns the fields of the entity that have been optimistically updated.
+
+```js
+// Add the entity
+dispatch({
+  type: 'SOME_ACTION',
+  payload: {
+    entities: {
+      todo: {
+        1: {
+          id: 1,
+          title: 'Do stuff',
+          completed: false
+        }
+      }
+    }
+  }
+})
+
+// Create the optimistic update
+dispatch(optimisticUpdate('TODO/1/COMPLETE', {
+  todo: {
+    1: {
+      completed: true
+    }
+  }
+}))
+
+// Use the selector to get the changes
+getItemUpdateForRef(state, 'todo', 1, 'TODO/1/COMPLETE'); // { completed: true }
+```
+
+### getItemUpdates(state, entityName, id) -> {}
+Returns all of the optimistic updates for an entity.
+
+If the entity has been optimistically updated, the returned entity have the added information:
+```js
+{
+  __optimistic: true
+  __refs: [] // list of refs that have current optimistic updates for the entity
+}
+```
+
+```js
+// Add the entity
+dispatch({
+  type: 'SOME_ACTION',
+  payload: {
+    entities: {
+      todo: {
+        1: {
+          id: 1,
+          title: 'Do stuff',
+          completed: false
+        }
+      }
+    }
+  }
+})
+
+// Create the optimistic update
+dispatch(optimisticUpdate('TODO/1/COMPLETE', {
+  todo: {
+    1: {
+      completed: true
+    }
+  }
+}))
+
+// Create the optimistic update
+dispatch(optimisticUpdate('TODO/1/UPDATE', {
+  todo: {
+    1: {
+      title: 'Do other stuff'
+    }
+  }
+}))
+
+// Use the selector to get the changes
+getItemUpdates(state, 'todo', 1);
+
+/* 
+ {
+   id: 1,
+   title: 'Do other stuff',
+   completed: true,
+   refs: [
+     'TODO/1/COMPLETE',
+     'TODO/1/UPDATE'
+   ],
+   __optimistic: true
+ }
+ */
 ```
 
 ### getTimestamp(state, entityName, id) -> (timestamp | undefined)
