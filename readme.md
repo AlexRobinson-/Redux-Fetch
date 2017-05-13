@@ -25,6 +25,7 @@ Once this project reaches V2 it will start following semantic versioning.
 - [Usage](#usage)
   - [Fetch](#fetch-1)
     - [Making api calls](#making-api-calls)
+    - [Making api calls your own way](#making-api-calls-your-own-way)
     - [Listening in to fetch actions in your own reducers](#listening-in-to-fetch-actions-in-your-own-reducers)
   - [Entities](#entities-1)
     - [Adding and updating entities](#adding-and-updating-entities)
@@ -141,20 +142,22 @@ createEntitySelectors function takes three parameters
 - Get state (optional) - A function that returns the sub-state for where you keep this library (defaults to returning the passed in state)
 - Selectors (optional - should be rarely used) - The selectors you want to generate for the entity (will default to the the packages selectors, look at documentation for more information).
 
+```js
+// wherever-you-keep-selectors.js (I normally keep them in same file as their reducer)
+import { createEntitySelector } from 'alexs-redux-fetch';
+
+
+export const todoSelectors = createEntitySelector('todo', state => state.api);
+export const userSelectors = createEntitySelector('user', state => state.api);
+```
+
 #### Fetch Selectors
 
 To use the fetch selectors use createFetchSelectors, which takes one argument to get the state.   
 
-Example
-
 ```js
 // wherever-you-keep-selectors.js (I normally keep them in same file as their reducer)
-import { createEntitySelector, createFetchSelectors } from 'alexs-redux-fetch';
-
-// your selectors
-
-export const todoSelectors = createEntitySelector('todo', state => state.api);
-export const userSelectors = createEntitySelector('user', state => state.api);
+import { createFetchSelectors } from 'alexs-redux-fetch';
 
 export const fetchSelectors = createFetchSelectors(state => state.api);
 ```
@@ -189,7 +192,7 @@ As mentioned in the above section, the entity reducer will use any entities from
 The fetchAction thunk in this library will add whatever your api/promise resolves with to the action payload.
 So to make your action files a little cleaner, add your normalization code to your api functions.
 
-Note: the fetchAction thunk is expecting your api/promise to resolve with an object with either a response or error ref. This can be added to the api code as well.
+Note: the fetchAction thunk is expecting your api/promise to resolve with an object with either a response or error attribute. This can be added to the api code as well.
 
 Example:
 ```js
@@ -241,7 +244,7 @@ export const fetchTodo = id => fetchAction(
 This thunk action will perform the following steps:
 1. If optimistic provided, it will dispatch `optimisticUpdate`
 2. Dispatch `fetchRequest`
-3. Dispatch `connectionStats`
+3. Dispatch thunk `connectionStats`
 4.  If promise resolves with an object with an 'error' attribute, dispatches `fetchFailure`
     
     OR
@@ -310,6 +313,54 @@ export default connect(
     error: fetchSelectors.getErrorMessage(state, `TODO/${ownProps.todoId}/GET`)
   })
 )(Todo);
+```
+
+#### Making api calls your own way
+The provided fetchAction thunk is pretty basic
+
+```js
+export const fetchAction = (ref, promise, optimistic) =>
+  (dispatch, getState) => new Promise(res => {
+      if (optimistic) {
+        dispatch(optimisticUpdate(ref, optimistic))
+      }
+      dispatch(fetchRequest(ref))
+      dispatch(connectionStats(ref, promise))
+
+      promise.then(
+        ({ response, error }) => {
+          if (error) {
+            dispatch(fetchFailure(ref, { error }))
+            res({ error })
+            return
+          }
+
+          dispatch(fetchSuccess(ref, response))
+
+          res({ response })
+        }
+      )
+    })
+```
+
+However, if you aren't using redux thunk, or if you want to implement your own logic, please feel free to build your own fetchActions!
+
+Maybe you don't care about optimisticUpdates or connection stats and all of your api's reject the promise rather than resolving with an `error` attribute.
+
+That's fine, just build up your own.
+
+```js
+export const fetchAction = (ref, promise) => async (dispatch, getState) => {
+  dispatch(fetchRequest(ref))
+  
+  try {
+    const response = await promise;
+    dispatch(fetchSuccess(ref, response))
+    
+  } catch(err) {
+    dispatch(fetchFailure(ref, { error: err.message }))
+  }
+}
 ```
 
 #### Listening in to fetch actions in your own reducers
