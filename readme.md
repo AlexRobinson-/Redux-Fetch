@@ -31,6 +31,7 @@ The specific information each has includes:
  - **Error** The error message of the last failed attempt
  
 ### Entities
+ - **Normalized** Stores the entities by their entityName + id
  - **Optimistic** Allows you to optimistically update the entity store and roll back any failed/cancelled updates
  - **Editable** Allows you to have one editable entity per entity type at a time
  - **Timestamp** For every entity added to the store, a timestamp is added to keep track of when the data was last put into the redux store.
