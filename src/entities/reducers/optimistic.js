@@ -4,7 +4,7 @@ import {
   createReducer
 } from 'alexs-redux-helpers/reducers';
 import { FETCH_ACTION_TYPES } from './../../fetch';
-import { OPTIMISTIC_UPDATE, CANCEL_OPTIMISTIC_UPDATE } from './../action-types';
+import { OPTIMISTIC_UPDATE } from './../action-types';
 
 const reducer = createMultiReducer({
   updates: {
@@ -31,7 +31,6 @@ const reducer = createMultiReducer({
       ...state,
       action.payload.ref
     ],
-    [CANCEL_OPTIMISTIC_UPDATE]: (state, action) => state.filter(ref => ref !== action.payload.ref),
     default: createMetaReducer('fetch', createReducer({
       initial: [],
       [FETCH_ACTION_TYPES.SUCCESS]: (state, action) => state.filter(ref => ref !== action.ref)

@@ -6,9 +6,6 @@ import {
   STOP_EDITING,
   OPTIMISTIC_UPDATE
 } from './action-types';
-import {
-  fetchCancel
-} from './../fetch/actions';
 
 /**
  * Editable
@@ -42,7 +39,3 @@ export const optimisticUpdate = (ref, optimisticEntities) => action(
     optimisticEntities
   }
 )
-
-export const cancelOptimisticUpdate = ref => fetchCancel(ref)
-
-

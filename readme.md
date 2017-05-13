@@ -35,7 +35,7 @@ The specific information each has includes:
  - **Optimistic** Allows you to optimistically update the entity store and roll back any failed/cancelled updates
  - **Editable** Allows you to have one editable entity per entity type at a time
  - **Timestamp** For every entity added to the store, a timestamp is added to keep track of when the data was last put into the redux store.
-
+ 
 ## Getting Started
 All that is required to use this library is redux, although there are some things you can do to make the overall experience nicer 
 
@@ -166,7 +166,6 @@ createEntitySelectors function takes three parameters
 ```js
 // wherever-you-keep-selectors.js
 import { createEntitySelector } from 'alexs-redux-fetch';
-
 
 export const todoSelectors = createEntitySelector('todo', state => state.api);
 export const userSelectors = createEntitySelector('user', state => state.api);
