@@ -1,6 +1,6 @@
 # Core Api
 
-## createReducer(byIdReducers - optional)
+## createReducer (byIdReducers - optional)
 This will create the reducer for you to add into your root reducer.
 
 Sometimes you need to modify an entity, but not through passing the normalized entities attribute in an action's payload.
