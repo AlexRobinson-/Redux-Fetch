@@ -55,20 +55,19 @@ export const fetchAction = (ref, promise, optimistic) =>
       }
       dispatch(fetchRequest(ref))
 
-      const handledPromise = promise
+      dispatch(connectionStats(ref, promise.catch(() => undefined)))
+
+      promise
+        .then(
+          response => {
+            dispatch(fetchSuccess(ref, response))
+
+            res({ response })
+          }
+        )
         .catch(err => {
           const error = err.message;
           dispatch(fetchFailure(ref, { error }))
           res({ error })
         })
-
-      dispatch(connectionStats(ref, handledPromise))
-
-      promise.then(
-        response => {
-          dispatch(fetchSuccess(ref, response))
-
-          res({ response })
-        }
-      )
     })
