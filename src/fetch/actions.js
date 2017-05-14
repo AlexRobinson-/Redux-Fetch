@@ -27,9 +27,13 @@ const slowConnectionTimer = timeout => new Promise(res => {
 
 const wrapPromise = promise => new Promise(
   res => {
-    promise.then(response => {
-      res({ response })
-    })
+    promise
+      .then(response => {
+        res({ response })
+      })
+      .catch(err => {
+        res({ error: err && err.message })
+      })
   }
 )
 
@@ -55,7 +59,7 @@ export const fetchAction = (ref, promise, optimistic) =>
       }
       dispatch(fetchRequest(ref))
 
-      dispatch(connectionStats(ref, promise.catch(() => undefined)))
+      dispatch(connectionStats(ref, promise))
 
       promise
         .then(
