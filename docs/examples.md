@@ -18,7 +18,7 @@ Getting started tracking API calls with this library is rather easy with the bui
 This function takes in three parameters
 
  - **Ref** The unique key for this api call
- - **Promise** Some promise (usually your fetch call) that resolves with either a `response` or `error` attribute.
+ - **Promise** Some promise (usually your fetch call)
  - **Optimistic** (optional) The optimistic update for this api call (see optimistic docs for more info about this)
   
 Using it will look something like this
@@ -36,11 +36,11 @@ This thunk action will perform the following steps:
 1. If optimistic provided, it will dispatch `optimisticUpdate`
 2. Dispatch `fetchRequest`
 3. Dispatch thunk `connectionStats`
-4.  If promise resolves with an object with an 'error' attribute, dispatches `fetchFailure`
+4.  If promise is rejected, dispatches fetchFailure with the error's message
     
     OR
     
-    If promise resolves with an object with a 'response' attribute, dispatches `fetchSuccess`
+    If promise resolves, dispatches fetchSuccess
 
 Keeping it simple, lets consider if we just wanted to keep track of the status of our todo api call (we will ignore optimistic updates and connection stats for now).
 
@@ -68,8 +68,6 @@ export default connect(
   })
 )(Todo);
 ```
-
-When the api resolves, if it resolved with a `response` attribute, a `fetchSuccess` action will be dispatched, otherwise a `fetchFailure` action is dispatched.
 
 When a `fetchSuccess` action is dispatched, the ref will be marked as `SUCCESS`.
 When a `fetchFailure` action is dispatched, the ref will be marked as `FAILED`.
@@ -113,44 +111,45 @@ The provided fetchAction thunk is pretty basic
 export const fetchAction = (ref, promise, optimistic) =>
   (dispatch, getState) => new Promise(res => {
       if (optimistic) {
-        dispatch(optimisticUpdate(ref, optimistic))
+        dispatch(optimisticUpdate(ref, optimistic));
       }
-      dispatch(fetchRequest(ref))
-      dispatch(connectionStats(ref, promise))
+      dispatch(fetchRequest(ref));
+      dispatch(connectionStats(ref, promise));
 
-      promise.then(
-        ({ response, error }) => {
-          if (error) {
-            dispatch(fetchFailure(ref, { error }))
-            res({ error })
-            return
+      promise
+        .then(
+          response => {
+            dispatch(fetchSuccess(ref, response));
+  
+            res({ response });
           }
-
-          dispatch(fetchSuccess(ref, response))
-
-          res({ response })
-        }
-      )
+        )
+        .catch(err => {
+          const error = err.message;
+          dispatch(fetchFailure(ref, { error }));
+          res({ error });
+        })
     })
 ```
 
 However, if you aren't using redux thunk, or if you want to implement your own logic, please feel free to build your own fetchActions!
 
-Maybe you don't care about optimisticUpdates or connection stats and all of your api's reject the promise rather than resolving with an `error` attribute.
+Maybe you don't care about optimisticUpdates or connection stats and instead of rejecting a promise you resolve with an 'error' and 'response' attribute.
 
 That's fine, just build up your own.
 
 ```js
 export const fetchAction = (ref, promise) => async (dispatch, getState) => {
-  dispatch(fetchRequest(ref))
+  dispatch(fetchRequest(ref));
   
-  try {
-    const response = await promise;
-    dispatch(fetchSuccess(ref, response))
-    
-  } catch(err) {
-    dispatch(fetchFailure(ref, { error: err.message }))
-  }
+  const { response, error } = await promise;
+  
+  if (error) {
+    dispatch(fetchFailure(ref, { error }));
+    return;
+   }
+   
+  dispatch(fetchSuccess(ref, response));
 }
 ```
 

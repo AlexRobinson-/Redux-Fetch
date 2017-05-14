@@ -191,10 +191,7 @@ export const fetchSelectors = createFetchSelectors(state => state.api);
 ### 7. Set up your api code (optional)
 As mentioned in the above section, the entity reducer will use any entities from the action payload.
 
-The fetchAction thunk in this library will add whatever your api/promise resolves with to the action payload.
 So to make your action files a little cleaner, add your normalization code to your api functions.
-
-Note: the fetchAction thunk is expecting your api/promise to resolve with an object with either a response or error attribute. This can be added to the api code as well.
 
 Example:
 ```js
@@ -207,9 +204,7 @@ const { Entity } = schema;
 export const Todo = new Entity('todo');
 
 export const fetchAll = () => api('/todos')
-  .then(response => normalize(response, [Todo]))
-  .then(response => ({ response }))
-  .catch(error => ({ error }));
+  .then(response => normalize(response, [Todo]));
   
 // /actions/todo.js
 

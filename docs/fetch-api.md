@@ -79,11 +79,11 @@ The steps this actions takes looks like
 1. If optimistic provided, it will dispatch an optimisticUpdate
 2. Dispatch fetchRequest
 3. Dispatch connectionStats
-4.  If promise resolves with an object with an 'error' ref, dispatches fetchFailure
+4.  If promise is rejected, dispatches fetchFailure with the error's message
     
     OR
     
-    If promise resolves with an object with a 'response' ref, dispatches fetchSuccess
+    If promise resolves, dispatches fetchSuccess
 
 ## Selectors
 
