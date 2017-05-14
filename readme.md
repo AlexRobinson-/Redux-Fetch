@@ -92,7 +92,11 @@ const fetchTodoRef = id => `/TODO/${id}/GET`;
 const saveTodoApi = (id, fields) => api.post(`/todos/${id}`, fields)
 const saveTodoRef = id => `/TODO/${id}/SAVE`;
 
-const removeTodoApi = id => api.delete(`/todos/${id}`)
+const removeTodoApi = id => api
+  .delete(`/todos/${id}`)
+  .then(response => ({ response }))
+  .then(err => ({ error: err.message }))
+
 const removeTodoRef = id => `/TODO/${id}/REMOVE`;
 
 /* Using fetchAction thunk */
@@ -114,10 +118,10 @@ export const removeTodo = id => async dispatch => {
   
   dispatch(fetchRequest(ref))
   
-  const {response, error} = await removeTodoApi(id);
+  const { response, error } = await removeTodoApi(id);
   
   if (error) {
-    dispatch(fetchFailure(ref, { error: error.message }))
+    dispatch(fetchFailure(ref, { error }))
     return;
   }
   
