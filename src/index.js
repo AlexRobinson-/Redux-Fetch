@@ -7,9 +7,9 @@ import createEntityReducer, {
   createEntitySelectors as rawCreateEntitySelectors
 } from './entities';
 
-const createReducer = reducers => combineReducers({
+const createReducer = (...args) => combineReducers({
   fetch,
-  entities: createEntityReducer(reducers)
+  entities: createEntityReducer(...args)
 })
 
 
