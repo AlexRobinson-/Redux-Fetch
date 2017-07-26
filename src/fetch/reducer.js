@@ -109,6 +109,8 @@ const getErrorMessage = (state, ref) => state.error[ref];
 
 const getTimestamp = (state, ref) => state.timestamp[ref];
 
+const getHasLoaded = (state, ref) => state.status[ref] === LOADED;
+
 export const selectors = {
   getIsPending,
   getHasFailed,
@@ -117,5 +119,6 @@ export const selectors = {
   getStatus,
   getIsSlow,
   getErrorMessage,
-  getTimestamp
+  getTimestamp,
+  getHasLoaded
 }
